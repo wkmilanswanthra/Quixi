@@ -1,12 +1,7 @@
 import React, {useState} from 'react'
-import {
-    StyleSheet,
-    SafeAreaView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {StyleSheet, SafeAreaView, Text, TextInput, View,} from 'react-native';
+import Button from "../../components/Buttons/MainButton";
+import TextLink from "../../components/Buttons/TextLink";
 
 export default function Login({navigation}) {
 
@@ -15,37 +10,19 @@ export default function Login({navigation}) {
 
     const handleLogin = () => {
         // Handle login logic
+        //Temp Login function to redirect to homepage
+        navigation.navigate('Home');
     };
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 <Text style={styles.title}>Login</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    onChangeText={setEmail}
-                    value={email}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    onChangeText={setPassword}
-                    value={password}
-                    secureTextEntry={true}
-                />
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                    <Text style={styles.link}>Forgot password?</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                    <Text style={styles.link}>Create an account</Text>
-                </TouchableOpacity>
-
+                <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail} value={email} keyboardType="email-address" autoCapitalize="none"/>
+                <TextInput style={styles.input} placeholder="Password" onChangeText={setPassword} value={password} secureTextEntry={true}/>
+                <Button styles={styles.button} onPress={handleLogin} title="Login" color="dark" style={styles.button}/>
+                <TextLink styles={styles.link} onPress={() => navigation.navigate('ForgotPassword')} text="Forgot password?" style={styles.link}/>
+                <TextLink styles={styles.link} onPress={() => navigation.navigate('Register')} text="Create an account" style={styles.link}/>
             </View>
         </SafeAreaView>
     );
@@ -74,26 +51,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
-        marginBottom: 10,
         padding: 10,
+        marginTop: 10
     },
-    button: {
-        width: '100%',
-        height: 50,
-        backgroundColor: '#333',
-        borderRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
+    button:{
+        marginTop: 10
     },
     link: {
-        color: '#333',
-        fontSize: 16,
         marginTop: 10,
     },
 });
