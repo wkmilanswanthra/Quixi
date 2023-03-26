@@ -1,4 +1,4 @@
-const BASE_URL = 'https://ea37-2402-d000-a400-4f8a-c16c-689f-25d7-b675.in.ngrok.io/api';
+const BASE_URL = 'https://c155-2402-d000-a500-136d-4d6a-af45-4c15-4bb8.in.ngrok.io'+'/api';
 
 export const USER_ROUTES = {
     SIGNUP: `${BASE_URL}/users/signup`,
@@ -12,6 +12,8 @@ export const USER_ROUTES = {
 export const GROUP_ROUTES = {
     CREATE: `${BASE_URL}/groups`,
     FIND: `${BASE_URL}/groups`,
+    FIND_BY_ID: (id) => `${BASE_URL}/groups/${id}`,
+    FIND_BY_USER_ID: (id) =>`${BASE_URL}/groups/${id}`,
     UPDATE: (id) => `${BASE_URL}/groups/${id}`,
     DELETE: (id) => `${BASE_URL}/groups/${id}`,
 };
@@ -26,6 +28,7 @@ export const EXPENSE_ROUTES = {
         CREATE: (id) => `${BASE_URL}/expense/${id}/transaction`,
         FIND_ALL: (id) => `${BASE_URL}/expense/${id}/transaction`,
         FIND_BY_ID: (id, transactionId) => `${BASE_URL}/expense/${id}/transaction/${transactionId}`,
+        FIND_PENDING_TRANSACTIONS_BY_USER_ID: (id) => `${BASE_URL}/transactions/pending/${id}`,
         UPDATE_BY_ID: (id, transactionId) => `${BASE_URL}/expense/${id}/transaction/${transactionId}`,
         DELETE_BY_ID: (id, transactionId) => `${BASE_URL}/expense/${id}/transaction/${transactionId}`,
     },

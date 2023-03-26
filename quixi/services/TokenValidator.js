@@ -22,6 +22,5 @@ exports.validateToken = async (token) => {
 };
 
 exports.getToken = async () => {
-    const token = await SecureStore.getItemAsync('token');
-    return token;
+    return SecureStore.getItemAsync('token');
 }
