@@ -1,10 +1,11 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Image, SafeAreaView, ActivityIndicator} from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, Image, SafeAreaView, ActivityIndicator, Platform} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as SecureStore from 'expo-secure-store';
 import Axios from 'axios';
 import {useState} from "react";
 import {COLORS} from "../../assets/constants/Colors";
+import {StatusBar} from "react-native";
 
 export default function Profile({navigation, route}) {
 
@@ -48,7 +49,7 @@ export default function Profile({navigation, route}) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} >
             <View style={styles.bottomSheet}>
                 <View style={styles.header}>
                     <Image source={{uri: 'https://i.pravatar.cc/150'}} style={styles.profilePic}/>
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopEndRadius: 50,
         borderTopStartRadius: 50,
-        marginTop: 10
+        marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 10, // adjust for Android status bar
     }, container: {
         paddingTop: 10,
         backgroundColor: COLORS.PRIMARY,

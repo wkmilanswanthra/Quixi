@@ -7,7 +7,7 @@ import {
     SafeAreaView,
     ScrollView,
     Image,
-    ActivityIndicator
+    ActivityIndicator, RefreshControl
 } from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
@@ -22,6 +22,7 @@ export default function Groups({navigation}) {
     const [list, setList] = useState({})
     const [userId, setUserId] = useState('')
     const [token, setToken] = useState('')
+    const [refreshing] = useState(false)
 
 
     useEffect(() => {
@@ -72,15 +73,22 @@ export default function Groups({navigation}) {
     function handlePress(id) {
         console.log(id)
     }
+    function onRefresh() {
+        console.log('refreshing')
+        if (userId && token) {
+            getGroupList();
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="light"/>
             <View style={styles.bottomSheet}>
                 <View style={{height: '100%'}}>
-                    <ScrollView style={styles.scrollView}>
+                    <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                         {list.groups && list.groups.map((group, index) => (
-                            <TouchableOpacity key={index} onPress={() => handlePress(group._id)} style={styles.groupSlot}>
+                            <TouchableOpacity key={index} onPress={() => handlePress(group._id)}
+                                              style={styles.groupSlot}>
                                 <View style={styles.membersImageRow}>
                                     <Image style={[styles.image, styles.image1]}
                                            source={{uri: 'https://picsum.photos/id/100/200/200'}}/>
@@ -94,9 +102,8 @@ export default function Groups({navigation}) {
                                     <Text style={styles.groupOwe}>You owe</Text>
                                 </View>
                                 <View style={styles.groupRowDetail}>
-                                    <Text style={styles.groupCreatedBy}>Group created by</Text>
-                                    <Text style={styles.groupCreatedBy}> ff</Text>
-                                    <Text style={styles.groupBalance}> 3000.00</Text>
+                                    <Text style={styles.groupCreatedBy} numberOfLines={1}>Group created by {group.description}</Text>
+                                    <Text style={styles.groupBalance}> Rs. 3000.00</Text>
                                 </View>
                             </TouchableOpacity>
                         ))}
@@ -127,8 +134,11 @@ const styles = StyleSheet.create({
         height: 110,
         width: '85%',
         marginTop: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         marginHorizontal: 30,
-        borderRadius: 20
+        borderRadius: 20,
+        flexDirection: "column"
     },
     scrollView: {
         marginTop: 10,
@@ -137,29 +147,32 @@ const styles = StyleSheet.create({
         marginBottom: 60
     },
     groupRowDetail: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: "space-between"
     },
     groupName: {
-        marginLeft: 20
+        fontWeight: 'bold',
+        overflow: 'hidden',
     },
     groupOwe: {
     },
 
     groupCreatedBy: {
-        marginLeft: 20,
+        width: 200,
+        overflow: 'hidden',
     },
 
     groupBalance: {
-        marginLeft: 90,
+        fontWeight: 'bold'
     },
 
     membersImageRow: {
-        flexDirection: 'row', justifyContent: 'center', alignItems: 'center', // position: 'relative',
-        marginLeft: 20, marginTop: 10
+        flex: 2,
+        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',  marginTop: 10
     },
 
     image: {
-        width: 50, height: 50, borderRadius: 50, borderWidth: 2, borderColor: 'white', position: 'absolute',
+        width: 30, height: 30, borderRadius: 50, borderWidth: 2, borderColor: 'white', position: 'absolute',
     },
 
     image1: {
