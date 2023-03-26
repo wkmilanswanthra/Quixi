@@ -7,7 +7,7 @@ import {
     SafeAreaView,
     ScrollView,
     Image,
-    ActivityIndicator
+    ActivityIndicator, RefreshControl
 } from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
@@ -19,21 +19,29 @@ import * as SecureStore from "expo-secure-store";
 import {getToken} from '../../services/TokenValidator'
 
 export default function Groups({navigation}) {
-    const [list, setList] = useState([{}])
+    const [list, setList] = useState({})
     const [userId, setUserId] = useState('')
+    const [token, setToken] = useState('')
+    const [refreshing] = useState(false)
+
 
     useEffect(() => {
         async function fetchData() {
-            await getUserId()
-            await getGroupList()
+            await getUserId();
+            await getToken();
         }
 
-        fetchData().then(r => {
-        });
+        fetchData();
     }, []);
 
+    useEffect(() => {
+        if (userId && token) {
+            getGroupList();
+        }
+    }, [userId, token]);
+
+
     const getGroupList = async () => {
-        const token = await getToken();
         const url = GROUP_ROUTES.FIND + '/' + userId.replaceAll('"', '');
         console.log(url, '\n\n')
         let config = {
@@ -52,7 +60,6 @@ export default function Groups({navigation}) {
             .catch(function (error) {
                 console.log(error.response.message);
             });
-
     }
     const getUserId = async () => {
         const userId = await SecureStore.getItemAsync('userId');
@@ -60,11 +67,17 @@ export default function Groups({navigation}) {
     }
     const getToken = async () => {
         const token = await SecureStore.getItemAsync('token');
-        return token;
+        setToken(token);
     }
 
-    function handlePress() {
-
+    function handlePress(id) {
+        console.log(id)
+    }
+    function onRefresh() {
+        console.log('refreshing')
+        if (userId && token) {
+            getGroupList();
+        }
     }
 
     return (
@@ -72,36 +85,31 @@ export default function Groups({navigation}) {
             <StatusBar style="light"/>
             <View style={styles.bottomSheet}>
                 <View style={{height: '100%'}}>
-                    <ScrollView style={styles.scrollView}>
-                        {/*{list? (<ActivityIndicator size="small" color="#333"/>) : (*/}
-                        {/*    {*/}
-                        {/*        list.map((item, index) => {*/}
-                        {/*            return (*/}
-                        {/*                <View key={index}>*/}
-                        {/*                    /!*<TouchableOpacity style={styles.groupSlot} onPress={handlePress}>*!/*/}
-                        {/*                    /!*    <View style={styles.membersImageRow}>*!/*/}
-                        {/*                    /!*        <Image style={[styles.image, styles.image1]}*!/*/}
-                        {/*                    /!*               source={{uri: 'https://picsum.photos/id/100/200/200'}}/>*!/*/}
-                        {/*                    /!*        <Image style={[styles.image, styles.image2]}*!/*/}
-                        {/*                    /!*               source={{uri: 'https://picsum.photos/id/101/200/200'}}/>*!/*/}
-                        {/*                    /!*        <Image style={[styles.image, styles.image3]}*!/*/}
-                        {/*                    /!*               source={{uri: 'https://picsum.photos/id/102/200/200'}}/>*!/*/}
-                        {/*                    /!*    </View>*!/*/}
-                        {/*                    /!*    <View style={styles.groupRowDetail}>*!/*/}
-                        {/*                    /!*        <Text style={styles.groupName}></Text>*!/*/}
-                        {/*                    /!*        <Text style={styles.groupOwe}>You owe</Text>*!/*/}
-                        {/*                    /!*    </View>*!/*/}
-                        {/*                    /!*    <View style={styles.groupRowDetail}>*!/*/}
-                        {/*                    /!*        <Text style={styles.groupCreatedBy}>Group created by</Text>*!/*/}
-                        {/*                    /!*        <Text> ff</Text>*!/*/}
-                        {/*                    /!*        <Text style={styles.groupBalance}> 3000.00</Text>*!/*/}
-                        {/*                    /!*    </View>*!/*/}
-                        {/*                    /!*</TouchableOpacity>*!/*/}
-                        {/*                </View>*/}
-                        {/*            )*/}
-                        {/*        })*/}
-                        {/*    }*/}
-                        {/*)}*/}
+                    <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+                        {list.groups && list.groups.map((group, index) => (
+                            <TouchableOpacity key={index} onPress={() => handlePress(group._id)}
+                                              style={styles.groupSlot}>
+                                <View style={styles.membersImageRow}>
+                                    <Image style={[styles.image, styles.image1]}
+                                           source={{uri: 'https://picsum.photos/id/100/200/200'}}/>
+                                    <Image style={[styles.image, styles.image2]}
+                                           source={{uri: 'https://picsum.photos/id/101/200/200'}}/>
+                                    <Image style={[styles.image, styles.image3]}
+                                           source={{uri: 'https://picsum.photos/id/102/200/200'}}/>
+                                </View>
+                                <View style={styles.groupRowDetail}>
+                                    <Text style={styles.groupName}>{group.name}</Text>
+                                    <Text style={styles.groupOwe}>You owe</Text>
+                                </View>
+                                <View style={styles.groupRowDetail}>
+                                    <Text style={styles.groupCreatedBy} numberOfLines={1}>Group created by {group.description}</Text>
+                                    <Text style={styles.groupBalance}> Rs. 3000.00</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                        <View style={styles.endTextContainer}>
+                            <Text style={styles.endText}> End of groups list </Text>
+                        </View>
                     </ScrollView>
                 </View>
             </View>
@@ -116,16 +124,21 @@ const styles = StyleSheet.create({
         borderTopEndRadius: 50,
         borderTopStartRadius: 50,
         marginTop: 10
-    }, container: {
+    },
+    container: {
         paddingTop: 10,
         backgroundColor: COLORS.PRIMARY,
-    }, groupSlot: {
+    },
+    groupSlot: {
         backgroundColor: 'white',
         height: 110,
         width: '85%',
         marginTop: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         marginHorizontal: 30,
-        borderRadius: 10
+        borderRadius: 20,
+        flexDirection: "column"
     },
     scrollView: {
         marginTop: 10,
@@ -134,32 +147,32 @@ const styles = StyleSheet.create({
         marginBottom: 60
     },
     groupRowDetail: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: "space-between"
     },
-
     groupName: {
-        marginLeft: 30, marginTop: 50,
+        fontWeight: 'bold',
+        overflow: 'hidden',
     },
-
     groupOwe: {
-        marginLeft: 150, marginTop: 40,
     },
 
     groupCreatedBy: {
-        marginLeft: 30,
+        width: 200,
+        overflow: 'hidden',
     },
 
     groupBalance: {
-        marginLeft: 90,
+        fontWeight: 'bold'
     },
 
     membersImageRow: {
-        flexDirection: 'row', justifyContent: 'center', alignItems: 'center', // position: 'relative',
-        marginLeft: 20, marginTop: 10
+        flex: 2,
+        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',  marginTop: 10
     },
 
     image: {
-        width: 50, height: 50, borderRadius: 50, borderWidth: 2, borderColor: 'white', position: 'absolute',
+        width: 30, height: 30, borderRadius: 50, borderWidth: 2, borderColor: 'white', position: 'absolute',
     },
 
     image1: {
@@ -172,5 +185,13 @@ const styles = StyleSheet.create({
 
     image3: {
         top: 0, left: 40, zIndex: 3,
+    }, endTextContainer: {
+        marginTop: 20,
+        justifyContent: "center",
+        alignItems: "center"
     },
+    endText: {
+        color: COLORS.GREY,
+    }
+
 });
