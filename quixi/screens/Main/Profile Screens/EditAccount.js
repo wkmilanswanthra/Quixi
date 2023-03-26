@@ -58,7 +58,7 @@ export default function EditProfile({ navigation, route }) {
 
         <Button
           style={styles.btn}
-          mode="elevated"
+          mode="contained"
           disabled={!username}
           onPress={handleChangeUsername}
         >
@@ -96,7 +96,7 @@ export default function EditProfile({ navigation, route }) {
 
         <Button
           style={styles.btn}
-          mode="elevated"
+          mode="contained"
           onPress={handleChangePassword}
           disabled={!currentPassword || !newPassword || !confirmPassword}
         >
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
     height: 60,
+    elevation: 5, 
   },
   txt1: {
     marginTop: 50,
@@ -143,6 +144,14 @@ const styles = StyleSheet.create({
   btn: {
     marginTop: 20,
     width: "50%",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4.84,
+    elevation: 5, 
   },
   dv: {
     marginTop: 20,

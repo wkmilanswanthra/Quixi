@@ -102,7 +102,7 @@ export default function Profile({ navigation, route }) {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={styles.logoutButton}
+          style={[styles.logoutButton]}
           onPress={() => handlePress("logout")}
         >
           <View style={styles.btnBgLo}>
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
     backgroundColor: COLORS.PRIMARY,
-    alignItems:'center',
-    justifyContent:'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   header: {
     flexDirection: "row",
@@ -166,11 +166,15 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginBottom: 10,
-    shadowColor: "rgba(0,0,0, .4)",
-    shadowOffset: { height: 1, width: 1 },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4.84,
+
+    elevation: 5,
   },
   buttonText: {
     marginLeft: 20,
@@ -186,12 +190,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 20,
     paddingHorizontal: 20,
-    shadowColor: "rgba(0,0,0, .4)",
-    shadowOffset: { height: 1, width: 1 },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
     borderColor: "#ff4646",
     borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4.84,
+
+    elevation: 5, 
   },
   logoutButtonText: {
     marginLeft: 20,
