@@ -34,7 +34,7 @@ export default function Profile({ navigation, route }) {
         navigation.navigate("EditAccount");
         break;
       case "settings":
-        navigation.navigate("Settings");
+        navigation.navigate("SettingsNavigator");
         break;
       case "requestAssistance":
         navigation.navigate("RequestAssistance");
