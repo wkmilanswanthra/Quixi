@@ -1,4 +1,4 @@
-const BASE_URL = 'https://ea37-2402-d000-a400-4f8a-c16c-689f-25d7-b675.in.ngrok.io/api';
+const BASE_URL = 'https://bc77-103-21-164-145.ap.ngrok.io/api';
 
 export const USER_ROUTES = {
     SIGNUP: `${BASE_URL}/users/signup`,
@@ -17,7 +17,7 @@ export const GROUP_ROUTES = {
 };
 
 export const EXPENSE_ROUTES = {
-    CREATE: `${BASE_URL}/expense`,
+    CREATE: `${BASE_URL}/expensae`,
     FIND_ALL: `${BASE_URL}/expense`,
     FIND_BY_ID: (id) => `${BASE_URL}/expense/${id}`,
     UPDATE_BY_ID: (id) => `${BASE_URL}/expense/${id}`,
