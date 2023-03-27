@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useState} from 'react'
 import {StyleSheet, SafeAreaView, Text, TextInput, View, ActivityIndicator, TouchableOpacity,} from 'react-native';
 import TextLink from "../../components/Buttons/TextLink";
 import Validator from "../../services/InputValidator"

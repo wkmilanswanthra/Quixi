@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     compTitle: {
         marginTop: 30,
         justifyContent: "center",
-        alignItems: "left",
+        //alignItems: "left",
         marginHorizontal: 30,
     },
     compTitleStyle: {
