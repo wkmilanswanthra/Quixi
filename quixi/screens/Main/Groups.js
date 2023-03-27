@@ -141,11 +141,11 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "column"
     }, compTitle: {
-        marginTop: 30, justifyContent: "center", alignItems: "flex-start", marginHorizontal: 30, flexDirection:"row", justifyContent:"space-between"
+        marginTop: 30,  alignItems: "flex-start", marginHorizontal: 30, flexDirection:"row", justifyContent:"space-between"
     }, compTitleStyle: {
         fontWeight: 'bold', fontSize: 25
     }, scrollView: {
-        marginTop: 10, borderTopEndRadius: 50, borderTopStartRadius: 50, marginBottom: 100
+        marginTop: 10, borderTopEndRadius: 50, borderTopStartRadius: 50, marginBottom: 0
     }, groupRowDetail: {
         flexDirection: 'row', justifyContent: "space-between"
     }, groupName: {
