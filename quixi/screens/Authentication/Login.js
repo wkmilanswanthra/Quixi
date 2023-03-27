@@ -42,12 +42,12 @@ export default function Login({navigation, route}) {
                 .then(async (response) => {
                     const token = JSON.stringify(response.data.token);
                     const userId = JSON.stringify(response.data.user._id);
-                    setUserToken(token);
                     await SecureStore.setItemAsync('userId', userId)
                     SecureStore.setItemAsync('token', token)
                         .then(() => {
                             console.log('Token saved successfully');
                             setIsLoading(false);
+                            setUserToken(token);
                         })
                         .catch(error => {
                             console.log('Error saving token: ', error);

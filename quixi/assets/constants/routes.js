@@ -1,4 +1,4 @@
-const BASE_URL = 'https://150e-212-104-231-134.in.ngrok.io'+'/api';
+const BASE_URL = 'https://3f91-2401-dd00-10-20-e5db-938d-16d9-41df.in.ngrok.io'+'/api';
 
 export const USER_ROUTES = {
     SIGNUP: `${BASE_URL}/users/signup`,
