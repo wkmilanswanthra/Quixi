@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import * as SecureStore from "expo-secure-store";
 import Axios from "axios";
 import { useState } from "react";
-import { COLORS } from "../../../assets/constants/Colors";
+import { COLORS } from "../../../assets/constants/colors";
 import { StatusBar } from "react-native";
 import { TextInput, Divider, Button } from "react-native-paper";
 

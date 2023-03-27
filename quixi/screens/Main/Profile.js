@@ -12,8 +12,8 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import * as SecureStore from "expo-secure-store";
 import Axios from "axios";
-import { useState } from "react";
-import { COLORS } from "../../assets/constants/Colors";
+import {useEffect, useState} from "react";
+import { COLORS } from "../../assets/constants/colors";
 import { StatusBar } from "react-native";
 import { STRINGS } from "../../assets/constants/strings";
 import { EXPENSE_ROUTES, USER_ROUTES } from "../../assets/constants/routes";
