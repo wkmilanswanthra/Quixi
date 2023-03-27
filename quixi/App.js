@@ -1,13 +1,12 @@
 /**
  * This component is the root component of the app that handles persistent authentication and navigation
  */
-import React, {useEffect, useState, createContext, useContext} from "react";
+import React, {useEffect, useState} from "react";
 import {StatusBar} from 'expo-status-bar';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AuthNavigator from "./navigation/AuthNavigator";
 import HomeNavigator from "./navigation/HomeNavigator";
-import * as SecureStore from "expo-secure-store";
 import {validateToken, getToken} from "./services/TokenValidator"
 
 // Create a new stack navigator
@@ -28,13 +27,13 @@ export default function App() {
             try {
                 // Get user token from secure storage
                 const token = await getToken();
-
+                console.log('Got token from secure storage=',token);
                 if (token) {
                     // If token exists, validate it
-                    await validateToken(token.replaceAll('"', ''));
+                    const authenticated=await validateToken(token.replaceAll('"', ''));
 
                     // If validation succeeds, set user token
-                    setUserToken(token.replaceAll('"', ''));
+                    if(authenticated){setUserToken(token.replaceAll('"', ''));}
                 }
             } catch (error) {
                 // Handle errors appropriately
@@ -48,6 +47,7 @@ export default function App() {
 
     return (
         // Render navigation container
+
             <NavigationContainer>
                 {/* Render status bar*/}
                 <StatusBar style="dark"/>
@@ -66,5 +66,6 @@ export default function App() {
                     )}
                 </Stack.Navigator>
             </NavigationContainer>
+
     );
 };

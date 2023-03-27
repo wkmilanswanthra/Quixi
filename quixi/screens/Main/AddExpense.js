@@ -52,18 +52,18 @@ export default function AddExpense({navigation}) {
 
     }
 
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-    };
+    // const showDatePicker = () => {
+    //     setDatePickerVisibility(true);
+    // };
 
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
+    // const hideDatePicker = () => {
+    //     setDatePickerVisibility(false);
+    // };
 
-    const handleConfirm = (date) => {
-        console.warn("A date has been picked: ", date);
-        hideDatePicker();
-    };
+    // const handleConfirm = (date) => {
+    //     console.warn("A date has been picked: ", date);
+    //     hideDatePicker();
+    // };
 
     function createExpense() {
         if (contribution) {
@@ -153,7 +153,7 @@ export default function AddExpense({navigation}) {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.desre}>
-                            <TouchableOpacity style={styles.view5} onPress={showDatePicker}>
+                            {/* <TouchableOpacity style={styles.view5} onPress={showDatePicker}>
                                 <Text style={styles.textRe}>Add a date</Text>
                                 <Ionicons name='add-circle' size={30} color='black'/>
                             </TouchableOpacity>
@@ -162,7 +162,7 @@ export default function AddExpense({navigation}) {
                                 mode="date"
                                 onConfirm={handleConfirm}
                                 onCancel={hideDatePicker}
-                                isDarkModeEnabled={false}/>
+                                isDarkModeEnabled={false}/> */}
                         </View>
                         <View style={styles.btn}>
                             <TouchableOpacity onPress={handleSubmit}>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     }, container: {
         paddingTop: 10, backgroundColor: COLORS.PRIMARY,
     }, compTitle: {
-        marginTop: 30, justifyContent: "center", alignItems: "left", marginHorizontal: 30,
+        marginTop: 30, justifyContent: "center", marginHorizontal: 30,
     }, compTitleStyle: {
         fontWeight: 'bold', fontSize: 25
     }, firstContainer: {
