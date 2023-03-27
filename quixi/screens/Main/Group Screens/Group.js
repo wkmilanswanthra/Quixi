@@ -1,10 +1,65 @@
 import {StatusBar} from 'expo-status-bar';
-import { Ionicons} from '@expo/vector-icons';
+import {Ionicons} from '@expo/vector-icons';
 import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, SafeAreaView} from 'react-native';
-import {COLORS} from '../../assets/constants/Colors'
+import {COLORS} from '../../../assets/constants/colors'
+import {useEffect, useState} from "react";
+import * as SecureStore from "expo-secure-store";
+import {GROUP_ROUTES} from "../../../assets/constants/routes";
+import Axios from "axios";
 
-const Group = ({navigation}) => {
+const Group = ({navigation, route}) => {
+
+    const { groupId } = route.params;
+
+    const [userId, setUserId] = useState('')
+    const [token, setToken] = useState('')
+    const [group, setGroup] = useState({})
+    const [members, setMembers] = useState(null)
+
+    useEffect(() => {
+        async function fetchData() {
+            await getToken();
+            await getUserId();
+        }
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        if (userId && token) {
+            getGroupData();
+        }
+    }, [userId, token]);
+    const getUserId = async () => {
+        const userID = await SecureStore.getItemAsync('userId');
+        setUserId(userID);
+    }
+
+    const getToken = async () => {
+        const token = await SecureStore.getItemAsync('token');
+        setToken(token);
+    }
+
+    function getGroupData() {
+        const url = GROUP_ROUTES.FIND+'?id='+groupId;
+        let config = {
+            method: 'get', url: url, headers: {
+                authorization: 'Bearer ' + token.replaceAll('"', ''),
+            },
+        };
+        Axios(config)
+            .then(function (response) {
+                setGroup({...response.data})
+                setMembers(response.data.members)
+
+
+                console.log(members)
+            })
+            .catch(function (error) {
+                console.log(error.response.message);
+            });
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="light"/>
@@ -47,51 +102,51 @@ const Group = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    bottomSheet:{
-        height:'100%', //change this after design it
-        backgroundColor:COLORS.BG,
-        width:'100%',
-        borderTopEndRadius:50,
-        borderTopStartRadius:50,
-        marginTop:40
+    bottomSheet: {
+        height: '100%',
+        backgroundColor: COLORS.BG,
+        width: '100%',
+        borderTopEndRadius: 50,
+        borderTopStartRadius: 50,
+        marginTop: 40
     },
     container: {
-        paddingTop: 10 ,
+        paddingTop: 10,
         backgroundColor: COLORS.PRIMARY,
     }
     ,
-    addMembersSign:{
+    addMembersSign: {
         marginTop: 50,
-        paddingLeft:30,
-        flexDirection:'row',
+        paddingLeft: 30,
+        flexDirection: 'row',
         alignItems: 'center'
     },
-    btnSet:{
-        flexDirection:'row',
-        marginTop:30,
-        marginHorizontal:20
+    btnSet: {
+        flexDirection: 'row',
+        marginTop: 30,
+        marginHorizontal: 20
     },
-    btnSetText:{
-        fontSize:13,
-        color:'#000000',
-        backgroundColor:"#D9D9D9",
-        borderRadius:20,
-        width:100,
-        height:39,
-        fontWeight:'bold',
+    btnSetText: {
+        fontSize: 13,
+        color: '#000000',
+        backgroundColor: "#D9D9D9",
+        borderRadius: 20,
+        width: 100,
+        height: 39,
+        fontWeight: 'bold',
         textAlign: 'center',
-        padding:10,
-        marginLeft:10
+        padding: 10,
+        marginLeft: 10
     },
-    groupPageIconLine:{
-        flexDirection:'row',
-        marginTop:50,
+    groupPageIconLine: {
+        flexDirection: 'row',
+        marginTop: 50,
         marginHorizontal: 30,
         alignItems: 'center',
     },
-    groupIconText:{
+    groupIconText: {
         justifyContent: 'center',
-        paddingHorizontal:10
+        paddingHorizontal: 10
     }
 })
 export default Group;

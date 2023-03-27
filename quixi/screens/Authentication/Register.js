@@ -53,7 +53,7 @@ export default function Register({navigation}) {
 
         if (isValid) {
             // Handle registration logic
-            const name = concat(firstName, ' ', lastName);
+            const name = firstName+ ' ' + lastName;
             const newUser = {
                 "email": email, "name": name, "phoneNumber": phoneNumber, "address": address, "password": password
             };

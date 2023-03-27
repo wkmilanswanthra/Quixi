@@ -15,11 +15,60 @@ import Axios from "axios";
 import { useState } from "react";
 import { COLORS } from "../../assets/constants/Colors";
 import { StatusBar } from "react-native";
+import { STRINGS } from "../../assets/constants/strings";
+import { EXPENSE_ROUTES, USER_ROUTES } from "../../assets/constants/routes";
 
 export default function Profile({ navigation, route }) {
   const { setUserToken } = route.params;
 
   let [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  let [userId, setUserId] = useState("");
+  let [token, setToken] = useState("");
+  let [user, setUser] = useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      await getUserId();
+      await getToken();
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (userId && token) {
+      getUserData();
+    }
+  }, [userId, token]);
+
+  async function getUserData() {
+    const url = USER_ROUTES.FIND + "?id=" + userId.replaceAll('"', "");
+    console.log(url);
+    let config = {
+      method: "get",
+      url: url,
+      headers: {
+        authorization: "Bearer " + token.replaceAll('"', ""),
+      },
+    };
+
+    Axios(config)
+      .then((response) => {
+        setUser({ ...response.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  const getUserId = async () => {
+    const userId = await SecureStore.getItemAsync("userId");
+    setUserId(userId);
+  };
+  const getToken = async () => {
+    const token = await SecureStore.getItemAsync("token");
+    setToken(token);
+  };
 
   async function logout() {
     // Remove the JWT token from secure store
@@ -64,12 +113,15 @@ export default function Profile({ navigation, route }) {
         <Icon name="notifications" size={25} color="#fff" />
       </TouchableOpacity>
       <View style={styles.bottomSheet}>
+        <View style={styles.compTitle}>
+          <Text style={styles.compTitleStyle}>{STRINGS.PROFILE}</Text>
+        </View>
         <View style={styles.header}>
           <Image
-            source={{ uri: "https://i.pravatar.cc/150" }}
+            source={{ uri: user.profileImgUrl }}
             style={styles.profilePic}
           />
-          <Text style={styles.username}>John Doe</Text>
+          <Text style={styles.username}>{user.name}</Text>
           <Icon name="create-outline" size={15} color="#333" />
         </View>
         <View style={styles.buttons}>
@@ -102,7 +154,7 @@ export default function Profile({ navigation, route }) {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={[styles.logoutButton]}
+          style={styles.logoutButton}
           onPress={() => handlePress("logout")}
         >
           <View style={styles.btnBgLo}>
@@ -140,6 +192,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 50,
     paddingHorizontal: 20,
+  },
+  compTitle: {
+    marginTop: 30,
+    justifyContent: "center",
+    alignItems: "left",
+    marginHorizontal: 30,
+  },
+  compTitleStyle: {
+    fontWeight: "bold",
+    fontSize: 25,
   },
   profilePic: {
     width: 100,
@@ -200,7 +262,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4.84,
 
-    elevation: 5, 
+    elevation: 5,
   },
   logoutButtonText: {
     marginLeft: 20,
