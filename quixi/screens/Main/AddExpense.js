@@ -5,27 +5,27 @@ import {STRINGS} from "../../assets/constants/strings";
 import {COLORS} from "../../assets/constants/colors";
 import {FontAwesome, Ionicons} from "@expo/vector-icons";
 import {useRef, useState} from "react";
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+//import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function AddExpense({navigation}) {
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    //const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
     function pickImage() {
 
     }
 
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-    };
+    // const showDatePicker = () => {
+    //     setDatePickerVisibility(true);
+    // };
 
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
+    // const hideDatePicker = () => {
+    //     setDatePickerVisibility(false);
+    // };
 
-    const handleConfirm = (date) => {
-        console.warn("A date has been picked: ", date);
-        hideDatePicker();
-    };
+    // const handleConfirm = (date) => {
+    //     console.warn("A date has been picked: ", date);
+    //     hideDatePicker();
+    // };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -86,7 +86,7 @@ export default function AddExpense({navigation}) {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.desre}>
-                            <TouchableOpacity style={styles.view5} onPress={showDatePicker}>
+                            {/* <TouchableOpacity style={styles.view5} onPress={showDatePicker}>
                                 <Text style={styles.textRe}>Add a date</Text>
                                 <Ionicons name='add-circle' size={40} color='black'/>
                             </TouchableOpacity>
@@ -95,7 +95,7 @@ export default function AddExpense({navigation}) {
                                 mode="date"
                                 onConfirm={handleConfirm}
                                 onCancel={hideDatePicker}
-                                isDarkModeEnabled={false}/>
+                                isDarkModeEnabled={false}/> */}
                         </View>
                     </View>
                 </View>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     }, container: {
         paddingTop: 10, backgroundColor: COLORS.PRIMARY,
     }, compTitle: {
-        marginTop: 30, justifyContent: "center", alignItems: "left", marginHorizontal: 30,
+        marginTop: 30, justifyContent: "center", marginHorizontal: 30,
     }, compTitleStyle: {
         fontWeight: 'bold', fontSize: 25
     }, firstContainer: {

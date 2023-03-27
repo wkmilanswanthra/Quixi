@@ -30,18 +30,14 @@ export default function Groups({navigation}) {
     }, []);
 
     useEffect(() => {
-        console.log(userId, token)
-        if (userId && token) {
-            getGroupList();
+        if ((userId!=null) && (token!=null)) {
             console.log('running getting group list')
-
+            getGroupList();
         }
     }, [userId, token]);
 
 
     const getGroupList = async () => {
-        console.log(userId)
-        console.log(token)
         const url = GROUP_ROUTES.FIND_BY_USER_ID(userId.replaceAll('"', ''));
         let config = {
             method: 'get', url: url, headers: {
@@ -53,7 +49,7 @@ export default function Groups({navigation}) {
         Axios(config)
             .then(function (response) {
                 setList(response.data);
-                console.log(list)
+                console.log('list',list)
                 setRefreshing(false);
             })
             .catch(function (error) {
@@ -63,11 +59,13 @@ export default function Groups({navigation}) {
     const getUserId = async () => {
         const userId = await SecureStore.getItemAsync('userId');
         setUserId(userId);
+        console.log('getting user id', userId);
     }
 
     const getToken = async () => {
         const token = await SecureStore.getItemAsync('token');
         setToken(token);
+        console.log('getting token', token);
     }
 
     function handlePress(id) {
@@ -138,7 +136,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "column"
     }, compTitle: {
-        marginTop: 30, justifyContent: "center", alignItems: "left", marginHorizontal: 30,
+        marginTop: 30, justifyContent: "center",  marginHorizontal: 30,
     }, compTitleStyle: {
         fontWeight: 'bold', fontSize: 25
     }, scrollView: {
