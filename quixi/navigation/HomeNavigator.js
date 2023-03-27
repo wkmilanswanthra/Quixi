@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import {StyleSheet} from "react-native"
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Groups from "../screens/Main/Groups";
 import Friends from "../screens/Main/Friends";
-import ProfileNavigator from ".//ProfileNavigator";
-import GroupNavigator from ".//GroupNavigator";
+import ProfileNavigator from "./ProfileNavigator";
+import GroupNavigator from "./GroupNavigator";
 import Activity from "../screens/Main/Activity";
 import AddExpense from '../screens/Main/AddExpense'
 import AddExpenseButton from '../components/Buttons/AddExpenseButton'
@@ -39,7 +38,7 @@ export default function HomeNavigator({route}) {
                 return <Icon name={iconName} size={(route.name==="AddExpense") ? 45 : 25} />
             }
         })}>
-            <Tab.Screen name="GroupNavigator" component={GroupNavigator} />
+            <Tab.Screen name="GroupNavigator" component={GroupNavigator} initialParams={{setUserToken}}/>
             <Tab.Screen name="Friends" component={Friends}/>
             <Tab.Screen name="AddExpense" component={AddExpense} options={{
                 tabBarButton: props => <AddExpenseButton {...props}/>

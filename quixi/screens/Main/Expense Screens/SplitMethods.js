@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect} from "react";
 import { StyleSheet, Text, View, Button, Alert,Image , TextInput, ActivityIndicator, TouchableHighlight, FlatList} from 'react-native';
-import { Checkbox } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StackNavigator } from '@react-navigation/native-stack';
-import CustomCheckbox from './CheckBox';
+// import CustomCheckbox from './CheckBox';
 
 export default function SplitMethods()  {
 
@@ -67,7 +63,7 @@ export default function SplitMethods()  {
                     {item.title}
                     </Text>
                     <View style={styles.checkbox}>
-                    <CustomCheckbox />
+                    {/*<CustomCheckbox />*/}
                     </View>
                 </View>
                 )} />                        
