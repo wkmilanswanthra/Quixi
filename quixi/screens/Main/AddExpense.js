@@ -7,13 +7,11 @@ import {STRINGS} from "../../assets/constants/strings";
 import {COLORS} from "../../assets/constants/colors";
 import {FontAwesome, Ionicons} from "@expo/vector-icons";
 import {useRef, useState, useEffect} from "react";
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as SecureStore from "expo-secure-store";
 import {EXPENSE_ROUTES} from "../../assets/constants/routes";
 import Axios from "axios";
 
 export default function AddExpense({navigation}) {
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [userId, setUserId] = useState('')
     const [token, setToken] = useState('')
     const [splitAmong, setSplitAmong] = useState([])
@@ -51,19 +49,6 @@ export default function AddExpense({navigation}) {
     function pickImage() {
 
     }
-
-    // const showDatePicker = () => {
-    //     setDatePickerVisibility(true);
-    // };
-
-    // const hideDatePicker = () => {
-    //     setDatePickerVisibility(false);
-    // };
-
-    // const handleConfirm = (date) => {
-    //     console.warn("A date has been picked: ", date);
-    //     hideDatePicker();
-    // };
 
     function createExpense() {
         if (contribution) {
@@ -151,18 +136,6 @@ export default function AddExpense({navigation}) {
                                 <Text style={styles.textRe}>Add a receipt</Text>
                                 <Ionicons name='add-circle' size={30} color='black'/>
                             </TouchableOpacity>
-                        </View>
-                        <View style={styles.desre}>
-                            {/* <TouchableOpacity style={styles.view5} onPress={showDatePicker}>
-                                <Text style={styles.textRe}>Add a date</Text>
-                                <Ionicons name='add-circle' size={30} color='black'/>
-                            </TouchableOpacity>
-                            <DateTimePickerModal
-                                isVisible={isDatePickerVisible}
-                                mode="date"
-                                onConfirm={handleConfirm}
-                                onCancel={hideDatePicker}
-                                isDarkModeEnabled={false}/> */}
                         </View>
                         <View style={styles.btn}>
                             <TouchableOpacity onPress={handleSubmit}>

@@ -13,11 +13,10 @@ exports.validateToken = async (token) => {
         axios(config)
             .then(function (response) {
                 console.log('Authenticated',response.data);
-                return true
             })
             .catch(function (error) {
-                console.log('Not Authenticated',error.response.data);
-                return false;
+                console.log('Not Authenticated',error.response.data.authenticated);
+                return error.response.data.authenticated ==='true';
             });
 };
 

@@ -30,7 +30,8 @@ export default function App() {
                 console.log('Got token from secure storage=',token);
                 if (token) {
                     // If token exists, validate it
-                    const authenticated=await validateToken(token.replaceAll('"', ''));
+                    const authenticated = validateToken(token.replaceAll('"', ''));
+                    console.log(authenticated)
 
                     // If validation succeeds, set user token
                     if(authenticated){setUserToken(token.replaceAll('"', ''));}
