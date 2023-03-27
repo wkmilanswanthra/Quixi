@@ -50,10 +50,10 @@ const Group = ({navigation, route}) => {
         Axios(config)
             .then(function (response) {
                 setGroup({...response.data})
-                setMembers(response.data.members)
+                // setMembers(response.data.members)
 
 
-                console.log(members)
+                console.log()
             })
             .catch(function (error) {
                 console.log(error.response.message);

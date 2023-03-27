@@ -5,27 +5,29 @@ import {
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
 import {COLORS} from "../../assets/constants/colors";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Axios from "axios"
 import {GROUP_ROUTES} from "../../assets/constants/routes";
 import * as SecureStore from "expo-secure-store";
 import {STRINGS} from "../../assets/constants/strings";
-import {getToken} from '../../services/TokenValidator';
 
 
 export default function Groups({navigation}) {
     const [list, setList] = useState({})
     const [userId, setUserId] = useState('')
     const [token, setToken] = useState('')
-    const [refreshing, setRefreshing] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
 
 
     useEffect(() => {
         async function fetchData() {
             await getToken();
             await getUserId();
+            console.log(token, userId)
         }
-        fetchData();
+
+        fetchData().then(r => {
+            console.log(r)});
     }, []);
 
     useEffect(() => {
@@ -37,16 +39,19 @@ export default function Groups({navigation}) {
 
     const getGroupList = async () => {
         console.log(userId)
+        console.log(token)
         const url = GROUP_ROUTES.FIND_BY_USER_ID(userId.replaceAll('"', ''));
         let config = {
             method: 'get', url: url, headers: {
                 authorization: 'Bearer ' + token.replaceAll('"', ''),
             },
         };
+        console.log(config.url)
 
         Axios(config)
             .then(function (response) {
                 setList(response.data);
+                console.log(list)
                 setRefreshing(false);
             })
             .catch(function (error) {
@@ -70,48 +75,50 @@ export default function Groups({navigation}) {
 
     function onRefresh() {
         console.log('refreshing')
+        console.log(userId && token)
         if (userId && token) {
             getGroupList();
         }
     }
 
-    return (<SafeAreaView style={styles.container}>
-        <StatusBar style="light"/>
-        <View style={styles.bottomSheet}>
-            <View style={styles.compTitle}>
-                <Text style={styles.compTitleStyle}>{STRINGS.GROUPS}</Text>
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar style="light"/>
+            <View style={styles.bottomSheet}>
+                <View style={styles.compTitle}>
+                    <Text style={styles.compTitleStyle}>{STRINGS.GROUPS}</Text>
+                </View>
+                <View style={{height: '100%'}}>
+                    <ScrollView style={styles.scrollView}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+                        {list.groups && list.groups.map((group, index) => (
+                            <TouchableOpacity key={index} onPress={() => handlePress(group._id)}
+                                              style={styles.groupSlot}>
+                                <View style={styles.membersImageRow}>
+                                    <Image style={[styles.image, styles.image1]}
+                                           source={{uri: 'https://picsum.photos/id/100/200/200'}}/>
+                                    <Image style={[styles.image, styles.image2]}
+                                           source={{uri: 'https://picsum.photos/id/101/200/200'}}/>
+                                    <Image style={[styles.image, styles.image3]}
+                                           source={{uri: 'https://picsum.photos/id/102/200/200'}}/>
+                                </View>
+                                <View style={styles.groupRowDetail}>
+                                    <Text style={styles.groupName}>{group.name}</Text>
+                                    <Text style={styles.groupOwe}>You owe</Text>
+                                </View>
+                                <View style={styles.groupRowDetail}>
+                                    <Text style={styles.groupCreatedBy} numberOfLines={1}>Group created
+                                        by {group.description}</Text>
+                                    <Text style={styles.groupBalance}> Rs. 3000.00</Text>
+                                </View>
+                            </TouchableOpacity>))}
+                        <View style={styles.endTextContainer}>
+                            <Text style={styles.endText}> End of groups list </Text>
+                        </View>
+                    </ScrollView>
+                </View>
             </View>
-            <View style={{height: '100%'}}>
-                <ScrollView style={styles.scrollView}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
-                    {list.groups && list.groups.map((group, index) => (
-                        <TouchableOpacity key={index} onPress={() => handlePress(group._id)}
-                                          style={styles.groupSlot}>
-                            <View style={styles.membersImageRow}>
-                                <Image style={[styles.image, styles.image1]}
-                                       source={{uri: 'https://picsum.photos/id/100/200/200'}}/>
-                                <Image style={[styles.image, styles.image2]}
-                                       source={{uri: 'https://picsum.photos/id/101/200/200'}}/>
-                                <Image style={[styles.image, styles.image3]}
-                                       source={{uri: 'https://picsum.photos/id/102/200/200'}}/>
-                            </View>
-                            <View style={styles.groupRowDetail}>
-                                <Text style={styles.groupName}>{group.name}</Text>
-                                <Text style={styles.groupOwe}>You owe</Text>
-                            </View>
-                            <View style={styles.groupRowDetail}>
-                                <Text style={styles.groupCreatedBy} numberOfLines={1}>Group created
-                                    by {group.description}</Text>
-                                <Text style={styles.groupBalance}> Rs. 3000.00</Text>
-                            </View>
-                        </TouchableOpacity>))}
-                    <View style={styles.endTextContainer}>
-                        <Text style={styles.endText}> End of groups list </Text>
-                    </View>
-                </ScrollView>
-            </View>
-        </View>
-    </SafeAreaView>);
+        </SafeAreaView>);
 };
 
 const styles = StyleSheet.create({
