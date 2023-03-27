@@ -9,7 +9,6 @@ import AuthNavigator from "./navigation/AuthNavigator";
 import HomeNavigator from "./navigation/HomeNavigator";
 import * as SecureStore from "expo-secure-store";
 import {validateToken, getToken} from "./services/TokenValidator"
-import {AuthProvider} from "./hooks";
 
 // Create a new stack navigator
 const Stack = createNativeStackNavigator();
