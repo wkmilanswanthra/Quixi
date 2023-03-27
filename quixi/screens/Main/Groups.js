@@ -5,12 +5,13 @@ import {
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
 import {COLORS} from "../../assets/constants/colors";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Axios from "axios"
 import {GROUP_ROUTES} from "../../assets/constants/routes";
 import * as SecureStore from "expo-secure-store";
 import {STRINGS} from "../../assets/constants/strings";
-import {getToken} from '../../services/TokenValidator'
+import {getToken} from '../../services/TokenValidator';
+
 
 export default function Groups({navigation}) {
     const [list, setList] = useState({})
@@ -21,10 +22,9 @@ export default function Groups({navigation}) {
 
     useEffect(() => {
         async function fetchData() {
-            await getUserId();
             await getToken();
+            await getUserId();
         }
-
         fetchData();
     }, []);
 
@@ -36,6 +36,7 @@ export default function Groups({navigation}) {
 
 
     const getGroupList = async () => {
+        console.log(userId)
         const url = GROUP_ROUTES.FIND_BY_USER_ID(userId.replaceAll('"', ''));
         let config = {
             method: 'get', url: url, headers: {
@@ -56,6 +57,7 @@ export default function Groups({navigation}) {
         const userId = await SecureStore.getItemAsync('userId');
         setUserId(userId);
     }
+
     const getToken = async () => {
         const token = await SecureStore.getItemAsync('token');
         setToken(token);
@@ -63,6 +65,7 @@ export default function Groups({navigation}) {
 
     function handlePress(id) {
         console.log(id)
+        navigation.navigate('Group', {groupId: id});
     }
 
     function onRefresh() {

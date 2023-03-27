@@ -1,14 +1,15 @@
 /**
  * This component is the root component of the app that handles persistent authentication and navigation
  */
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, createContext, useContext} from "react";
 import {StatusBar} from 'expo-status-bar';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import AuthNavigator from "./Navigation/AuthNavigator";
-import HomeNavigator from "./Navigation/HomeNavigator";
+import AuthNavigator from "./navigation/AuthNavigator";
+import HomeNavigator from "./navigation/HomeNavigator";
 import * as SecureStore from "expo-secure-store";
 import {validateToken, getToken} from "./services/TokenValidator"
+import {AuthProvider} from "./hooks";
 
 // Create a new stack navigator
 const Stack = createNativeStackNavigator();
@@ -22,7 +23,6 @@ export default function App() {
 
     // State variable to hold user token
     const [userToken, setUserToken] = useState(null);
-
     // Check user authentication status on component mount
     useEffect(() => {
         async function checkAuth() {
@@ -39,32 +39,36 @@ export default function App() {
                 }
             } catch (error) {
                 // Handle errors appropriately
-                console.error(error);
+                console.error(error, 'here');
                 // Show error message to user
             }
         }
+
         checkAuth();
     }, []);
 
+
     return (
         // Render navigation container
-        <NavigationContainer>
-            {/* Render status bar*/}
-            <StatusBar style="dark"/>
+        <AuthProvider>
+            <NavigationContainer>
+                {/* Render status bar*/}
+                <StatusBar style="dark"/>
 
-            {/*Render stack navigator*/}
-            <Stack.Navigator
-                screenOptions={{headerShown: false}}>
+                {/*Render stack navigator*/}
+                <Stack.Navigator
+                    screenOptions={{headerShown: false}}>
 
-                {/*Conditionally render authentication or home navigator based on token existence*/}
-                {userToken == null ? (
-                    // No token found, user isn't signed in
-                    <Stack.Screen name="Auth" component={AuthNavigator} initialParams={{setUserToken}}/>
-                ) : (
-                    // User is signed in
-                    <Stack.Screen name="Home" component={HomeNavigator} initialParams={{setUserToken}}/>
-                )}
-            </Stack.Navigator>
-        </NavigationContainer>
+                    {/*Conditionally render authentication or home navigator based on token existence*/}
+                    {userToken == null ? (
+                        // No token found, user isn't signed in
+                        <Stack.Screen name="Auth" component={AuthNavigator} initialParams={{setUserToken}}/>
+                    ) : (
+                        // User is signed in
+                        <Stack.Screen name="Home" component={HomeNavigator} initialParams={{setUserToken}}/>
+                    )}
+                </Stack.Navigator>
+            </NavigationContainer>
+        </AuthProvider>
     );
 };

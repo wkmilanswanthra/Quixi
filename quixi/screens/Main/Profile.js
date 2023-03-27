@@ -3,15 +3,64 @@ import {Text, View, StyleSheet, TouchableOpacity, Image, SafeAreaView, ActivityI
 import Icon from "react-native-vector-icons/Ionicons";
 import * as SecureStore from 'expo-secure-store';
 import Axios from 'axios';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {COLORS} from "../../assets/constants/colors";
 import {StatusBar} from "react-native";
+import {STRINGS} from "../../assets/constants/strings";
+import {EXPENSE_ROUTES, USER_ROUTES} from "../../assets/constants/routes";
 
 export default function Profile({navigation, route}) {
 
     const {setUserToken} = route.params;
 
     let [isLoggingOut, setIsLoggingOut] = useState(false);
+    let [userId, setUserId] = useState('');
+    let [token, setToken] = useState('');
+    let [user, setUser] = useState({});
+
+    useEffect(() => {
+        async function fetchData() {
+            await getUserId();
+            await getToken();
+        }
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        if (userId && token) {
+            getUserData();
+        }
+    }, [userId, token]);
+
+    async function getUserData() {
+        const url = USER_ROUTES.FIND+'?id='+userId.replaceAll('"','');
+        console.log(url)
+        let config = {
+            method: 'get',
+            url: url,
+            headers: {
+                authorization: 'Bearer ' + token.replaceAll('"', ''),
+            },
+        };
+
+        Axios(config)
+            .then((response) => {
+                setUser({...response.data})
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    const getUserId = async () => {
+        const userId = await SecureStore.getItemAsync('userId');
+        setUserId(userId);
+    }
+    const getToken = async () => {
+        const token = await SecureStore.getItemAsync('token');
+        setToken(token);
+    }
+
 
     async function logout() {
         // Remove the JWT token from secure store
@@ -49,11 +98,14 @@ export default function Profile({navigation, route}) {
     }
 
     return (
-        <SafeAreaView style={styles.container} >
+        <SafeAreaView style={styles.container}>
             <View style={styles.bottomSheet}>
+                <View style={styles.compTitle}>
+                    <Text style={styles.compTitleStyle}>{STRINGS.PROFILE}</Text>
+                </View>
                 <View style={styles.header}>
-                    <Image source={{uri: 'https://i.pravatar.cc/150'}} style={styles.profilePic}/>
-                    <Text style={styles.username}>John Doe</Text>
+                    <Image source={{uri: user.profileImgUrl}} style={styles.profilePic}/>
+                    <Text style={styles.username}>{user.name}</Text>
                     <Icon name='create-outline' size={15} color='#333'/>
                 </View>
                 <View style={styles.buttons}>
@@ -94,8 +146,18 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.PRIMARY,
     }, header: {
         flexDirection: 'row', alignItems: 'center', marginBottom: 20, marginTop: 50, paddingHorizontal: 20
+    },
+    compTitle: {
+        marginTop: 30,
+        justifyContent: "center",
+        alignItems: "left",
+        marginHorizontal: 30,
+    },
+    compTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 25
     }, profilePic: {
-        width: 100, height: 100, borderRadius: 40, borderColor: '#203b86', borderWidth: 4,
+        width: 100, height: 100, borderRadius: 50, borderColor: '#203b86', borderWidth: 4,
     }, username: {
         marginLeft: 20, marginRight: 10, fontSize: 25,
     }, buttons: {

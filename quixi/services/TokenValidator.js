@@ -12,7 +12,7 @@ exports.validateToken = async (token) => {
         };
         axios(config)
             .then(function (response) {
-                console.log(JSON.stringify(response.data.tokenValid));
+                console.log(JSON.stringify(response.data));
                 return true
             })
             .catch(function (error) {

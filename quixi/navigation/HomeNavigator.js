@@ -3,7 +3,8 @@ import {StyleSheet} from "react-native"
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Groups from "../screens/Main/Groups";
 import Friends from "../screens/Main/Friends";
-import ProfileNavigator from "../Navigation/ProfileNavigator";
+import ProfileNavigator from ".//ProfileNavigator";
+import GroupNavigator from ".//GroupNavigator";
 import Activity from "../screens/Main/Activity";
 import AddExpense from '../screens/Main/AddExpense'
 import AddExpenseButton from '../components/Buttons/AddExpenseButton'
@@ -24,7 +25,7 @@ export default function HomeNavigator({route}) {
             tabBarInactiveTintColor: '#333',
             tabBarIcon: ({color, size, focused}) =>{
                 let iconName;
-                if (route.name==="Groups"){
+                if (route.name==="GroupNavigator"){
                     iconName = focused? 'ios-home-sharp':'ios-home-outline';
                 }else if(route.name==="Friends"){
                     iconName = focused? 'ios-people-sharp':'ios-people-outline';
@@ -38,7 +39,7 @@ export default function HomeNavigator({route}) {
                 return <Icon name={iconName} size={(route.name==="AddExpense") ? 45 : 25} />
             }
         })}>
-            <Tab.Screen name="Groups" component={Groups}/>
+            <Tab.Screen name="GroupNavigator" component={GroupNavigator} />
             <Tab.Screen name="Friends" component={Friends}/>
             <Tab.Screen name="AddExpense" component={AddExpense} options={{
                 tabBarButton: props => <AddExpenseButton {...props}/>
