@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     compTitle: {
         marginTop: 30,
         justifyContent: "center",
-        alignItems: "left",
+        alignItems: "flex-start",
         marginHorizontal: 30,
     },
     compTitleStyle: {

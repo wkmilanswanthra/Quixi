@@ -5,48 +5,53 @@ import {
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
 import {COLORS} from "../../assets/constants/colors";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Axios from "axios"
 import {GROUP_ROUTES} from "../../assets/constants/routes";
 import * as SecureStore from "expo-secure-store";
 import {STRINGS} from "../../assets/constants/strings";
-import {getToken} from '../../services/TokenValidator';
+import Icon from "react-native-vector-icons/Ionicons";
+import CreateGroup from '../Main/Group Screens/CreateGroup';
 
 
 export default function Groups({navigation}) {
     const [list, setList] = useState({})
     const [userId, setUserId] = useState('')
     const [token, setToken] = useState('')
-    const [refreshing, setRefreshing] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
 
 
     useEffect(() => {
         async function fetchData() {
             await getToken();
             await getUserId();
+            console.log('running useState')
         }
+
         fetchData();
     }, []);
 
     useEffect(() => {
-        if (userId && token) {
+        if ((userId!=null) && (token!=null)) {
+            console.log('running getting group list')
             getGroupList();
         }
     }, [userId, token]);
 
 
     const getGroupList = async () => {
-        console.log(userId)
         const url = GROUP_ROUTES.FIND_BY_USER_ID(userId.replaceAll('"', ''));
         let config = {
             method: 'get', url: url, headers: {
                 authorization: 'Bearer ' + token.replaceAll('"', ''),
             },
         };
+        console.log(config.url)
 
         Axios(config)
             .then(function (response) {
                 setList(response.data);
+                console.log('list',list)
                 setRefreshing(false);
             })
             .catch(function (error) {
@@ -56,11 +61,13 @@ export default function Groups({navigation}) {
     const getUserId = async () => {
         const userId = await SecureStore.getItemAsync('userId');
         setUserId(userId);
+        console.log('getting user id', userId);
     }
 
     const getToken = async () => {
         const token = await SecureStore.getItemAsync('token');
         setToken(token);
+        console.log('getting token', token);
     }
 
     function handlePress(id) {
@@ -69,55 +76,58 @@ export default function Groups({navigation}) {
     }
 
     function onRefresh() {
-        console.log('refreshing')
         if (userId && token) {
             getGroupList();
         }
     }
 
-    return (<SafeAreaView style={styles.container}>
-        <StatusBar style="light"/>
-        <View style={styles.bottomSheet}>
-            <View style={styles.compTitle}>
-                <Text style={styles.compTitleStyle}>{STRINGS.GROUPS}</Text>
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar style="light"/>
+            <View style={styles.bottomSheet}>
+                <View style={styles.compTitle}>
+                    <Text style={styles.compTitleStyle}>{STRINGS.GROUPS}</Text>
+                    <TouchableOpacity style={styles.createGroupIcon} onPress={()=>navigation.navigate('CreateGroup',)} >
+                        <Icon name="add-circle" size={30} color="#000" />
+                    </TouchableOpacity>
+                </View>
+                <View style={{height: 620}}>
+                    <ScrollView style={styles.scrollView}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+                        {list.groups && list.groups.map((group, index) => (
+                            <TouchableOpacity key={index} onPress={() => handlePress(group._id)}
+                                              style={styles.groupSlot}>
+                                <View style={styles.membersImageRow}>
+                                    <Image style={[styles.image, styles.image1]}
+                                           source={{uri: 'https://picsum.photos/id/100/200/200'}}/>
+                                    <Image style={[styles.image, styles.image2]}
+                                           source={{uri: 'https://picsum.photos/id/101/200/200'}}/>
+                                    <Image style={[styles.image, styles.image3]}
+                                           source={{uri: 'https://picsum.photos/id/102/200/200'}}/>
+                                </View>
+                                <View style={styles.groupRowDetail}>
+                                    <Text style={styles.groupName}>{group.name}</Text>
+                                    <Text style={styles.groupOwe}>You owe</Text>
+                                </View>
+                                <View style={styles.groupRowDetail}>
+                                    <Text style={styles.groupCreatedBy} numberOfLines={1}>Group created
+                                        by {group.description}</Text>
+                                    <Text style={styles.groupBalance}> Rs. 3000.00</Text>
+                                </View>
+                            </TouchableOpacity>))}
+                        <View style={styles.endTextContainer}>
+                            <Text style={styles.endText}> End of groups list </Text>
+                        </View>
+                    </ScrollView>
+                </View>
             </View>
-            <View style={{height: '100%'}}>
-                <ScrollView style={styles.scrollView}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
-                    {list.groups && list.groups.map((group, index) => (
-                        <TouchableOpacity key={index} onPress={() => handlePress(group._id)}
-                                          style={styles.groupSlot}>
-                            <View style={styles.membersImageRow}>
-                                <Image style={[styles.image, styles.image1]}
-                                       source={{uri: 'https://picsum.photos/id/100/200/200'}}/>
-                                <Image style={[styles.image, styles.image2]}
-                                       source={{uri: 'https://picsum.photos/id/101/200/200'}}/>
-                                <Image style={[styles.image, styles.image3]}
-                                       source={{uri: 'https://picsum.photos/id/102/200/200'}}/>
-                            </View>
-                            <View style={styles.groupRowDetail}>
-                                <Text style={styles.groupName}>{group.name}</Text>
-                                <Text style={styles.groupOwe}>You owe</Text>
-                            </View>
-                            <View style={styles.groupRowDetail}>
-                                <Text style={styles.groupCreatedBy} numberOfLines={1}>Group created
-                                    by {group.description}</Text>
-                                <Text style={styles.groupBalance}> Rs. 3000.00</Text>
-                            </View>
-                        </TouchableOpacity>))}
-                    <View style={styles.endTextContainer}>
-                        <Text style={styles.endText}> End of groups list </Text>
-                    </View>
-                </ScrollView>
-            </View>
-        </View>
-    </SafeAreaView>);
+        </SafeAreaView>);
 };
 
 const styles = StyleSheet.create({
     bottomSheet: {
         height: '100%', //change this after design it
-        backgroundColor: COLORS.BG, width: '100%', borderTopEndRadius: 50, borderTopStartRadius: 50, marginTop: 10
+        backgroundColor: COLORS.BG, width: '100%', borderTopEndRadius: 50, borderTopStartRadius: 50, marginTop: 100
     }, container: {
         paddingTop: 10, backgroundColor: COLORS.PRIMARY,
     }, groupSlot: {
@@ -131,7 +141,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "column"
     }, compTitle: {
-        marginTop: 30, justifyContent: "center", alignItems: "left", marginHorizontal: 30,
+        marginTop: 30, justifyContent: "center", alignItems: "flex-start", marginHorizontal: 30, flexDirection:"row", justifyContent:"space-between"
     }, compTitleStyle: {
         fontWeight: 'bold', fontSize: 25
     }, scrollView: {
@@ -146,6 +156,9 @@ const styles = StyleSheet.create({
     },
     groupBalance: {
         fontWeight: 'bold'
+    },
+    createGroupIcon:{
+        marginTop: 5
     },
     membersImageRow: {
         flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10
