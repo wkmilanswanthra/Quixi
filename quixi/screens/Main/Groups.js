@@ -23,16 +23,18 @@ export default function Groups({navigation}) {
         async function fetchData() {
             await getToken();
             await getUserId();
-            console.log(token, userId)
+            console.log('running useState')
         }
 
-        fetchData().then(r => {
-            console.log(r)});
+        fetchData();
     }, []);
 
     useEffect(() => {
+        console.log(userId, token)
         if (userId && token) {
             getGroupList();
+            console.log('running getting group list')
+
         }
     }, [userId, token]);
 
@@ -74,8 +76,6 @@ export default function Groups({navigation}) {
     }
 
     function onRefresh() {
-        console.log('refreshing')
-        console.log(userId && token)
         if (userId && token) {
             getGroupList();
         }
