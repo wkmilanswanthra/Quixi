@@ -136,8 +136,10 @@ export default function Profile({ navigation, route }) {
               source={{ uri: user.profileImgUrl }}
               style={styles.profilePic}
             />
-            <Text style={styles.username}>{user.name}</Text>
-            <Icon name="create-outline" size={15} color="#333" />
+            <TouchableOpacity style={styles.title} onPress={() => handlePress("editAccount")}>
+              <Text style={styles.username}>{user.name}</Text>
+              <Icon name="create-outline" size={15} color="#333" />
+            </TouchableOpacity>
           </View>
           <View style={styles.buttons}>
             <TouchableOpacity
@@ -207,6 +209,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     paddingHorizontal: 20,
+  },
+  title:{
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   compTitle: {
     marginTop: 30,
