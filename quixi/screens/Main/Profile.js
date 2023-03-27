@@ -8,11 +8,13 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Platform,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as SecureStore from "expo-secure-store";
 import Axios from "axios";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { COLORS } from "../../assets/constants/colors";
 import { StatusBar } from "react-native";
 import { STRINGS } from "../../assets/constants/strings";
@@ -26,6 +28,7 @@ export default function Profile({ navigation, route }) {
   let [userId, setUserId] = useState("");
   let [token, setToken] = useState("");
   let [user, setUser] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -40,6 +43,12 @@ export default function Profile({ navigation, route }) {
       getUserData();
     }
   }, [userId, token]);
+
+  function onRefresh() {
+    if (userId && token) {
+      getUserData();
+    }
+  }
 
   async function getUserData() {
     const url = USER_ROUTES.FIND + "?id=" + userId.replaceAll('"', "");
@@ -113,59 +122,66 @@ export default function Profile({ navigation, route }) {
         <Icon name="notifications" size={25} color="#fff" />
       </TouchableOpacity>
       <View style={styles.bottomSheet}>
-        <View style={styles.compTitle}>
-          <Text style={styles.compTitleStyle}>{STRINGS.PROFILE}</Text>
-        </View>
-        <View style={styles.header}>
-          <Image
-            source={{ uri: user.profileImgUrl }}
-            style={styles.profilePic}
-          />
-          <Text style={styles.username}>{user.name}</Text>
-          <Icon name="create-outline" size={15} color="#333" />
-        </View>
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("editAccount")}
-          >
-            <View style={styles.btnBg}>
-              <Icon name="person-circle-outline" size={24} color="#333" />
-            </View>
-            <Text style={styles.buttonText}>Account Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("settings")}
-          >
-            <View style={styles.btnBg}>
-              <Icon name="settings-outline" size={24} color="#333" />
-            </View>
-            <Text style={styles.buttonText}>Settings</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("requestAssistance")}
-          >
-            <View style={styles.btnBg}>
-              <Icon name="help-circle-outline" size={24} color="#333" />
-            </View>
-            <Text style={styles.buttonText}>Get Assistance</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={() => handlePress("logout")}
+        <ScrollView
+          style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
-          <View style={styles.btnBgLo}>
-            <Icon name="log-out-outline" size={24} color="#333" />
+          <View style={styles.compTitle}>
+            <Text style={styles.compTitleStyle}>{STRINGS.PROFILE}</Text>
           </View>
-          {isLoggingOut ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          )}
-        </TouchableOpacity>
+          <View style={styles.header}>
+            <Image
+              source={{ uri: user.profileImgUrl }}
+              style={styles.profilePic}
+            />
+            <Text style={styles.username}>{user.name}</Text>
+            <Icon name="create-outline" size={15} color="#333" />
+          </View>
+          <View style={styles.buttons}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handlePress("editAccount")}
+            >
+              <View style={styles.btnBg}>
+                <Icon name="person-circle-outline" size={24} color="#333" />
+              </View>
+              <Text style={styles.buttonText}>Account Details</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handlePress("settings")}
+            >
+              <View style={styles.btnBg}>
+                <Icon name="settings-outline" size={24} color="#333" />
+              </View>
+              <Text style={styles.buttonText}>Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handlePress("requestAssistance")}
+            >
+              <View style={styles.btnBg}>
+                <Icon name="help-circle-outline" size={24} color="#333" />
+              </View>
+              <Text style={styles.buttonText}>Get Assistance</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => handlePress("logout")}
+          >
+            <View style={styles.btnBgLo}>
+              <Icon name="log-out-outline" size={24} color="#333" />
+            </View>
+            {isLoggingOut ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            )}
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -189,8 +205,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
-    marginTop: 50,
+    marginTop: 20,
     paddingHorizontal: 20,
   },
   compTitle: {

@@ -13,11 +13,11 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import * as SecureStore from "expo-secure-store";
 import Axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { COLORS } from "../../../assets/constants/colors";
 import { StatusBar } from "react-native";
 import { TextInput, Divider, Button } from "react-native-paper";
-
+import { USER_ROUTES } from "../../../assets/constants/routes";
 
 export default function EditProfile({ navigation, route }) {
   const [username, setUsername] = useState("");
@@ -25,10 +25,59 @@ export default function EditProfile({ navigation, route }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  let [userId, setUserId] = useState("");
+  let [token, setToken] = useState("");
+  let [user, setUser] = useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      await getUserId();
+      await getToken();
+    }
+    fetchData();
+  }, []);
+
+  const getUserId = async () => {
+    const userId = await SecureStore.getItemAsync("userId");
+    setUserId(userId);
+  };
+  const getToken = async () => {
+    const token = await SecureStore.getItemAsync("token");
+    setToken(token);
+  };
+
   const handleChangeUsername = () => {
+    let url = USER_ROUTES.UPDATE(userId.replaceAll('"', ""));
+
+    const userData = {
+      'name': username,
+    };
+
+    const config = {
+      method: "patch",
+      url: url,
+      headers: {
+        authorization: "Bearer " + token.replaceAll('"', ""),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: userData,
+    };
+
+    console.log(config)
+
+    Axios(config)
+      .then((response) => {
+        console.log(response.data);
+        Alert.alert("Success", "Username changed successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+        Alert.alert("failed", error);
+      });
+
     // code to handle changing the user's username
     setUsername("");
-    Alert.alert("Success", "Username changed successfully");
+    
   };
 
   const handleChangePassword = () => {
@@ -136,7 +185,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
     height: 60,
-    elevation: 5, 
+    elevation: 5,
   },
   txt1: {
     marginTop: 50,
@@ -151,7 +200,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4.84,
-    elevation: 5, 
+    elevation: 5,
   },
   dv: {
     marginTop: 20,
@@ -160,6 +209,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     color: COLORS.BG,
-    fontSize: 40
+    fontSize: 40,
   },
 });
