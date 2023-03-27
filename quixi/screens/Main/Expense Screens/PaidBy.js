@@ -4,7 +4,7 @@ import {ActivityIndicator, FlatList, StyleSheet, Text, View, TextInput,Image,Tou
 import CustomCheckbox from './CheckBox';
 import {FontAwesome} from '@expo/vector-icons';
 import PaidAmount from './PaidAmount';
-import AddExpense from './AddExpense';
+import AddExpense from '../../Main/AddExpense';
 
 const SplitAmount = ({navigation}) => {
   const [isLoading, setLoading] = useState(true);
@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         paddingLeft:20,
-        paddingTop:50
 
         
     },

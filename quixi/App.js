@@ -41,14 +41,13 @@ export default function App() {
                 // Show error message to user
             }
         }
-
         checkAuth();
     }, []);
 
 
     return (
         // Render navigation container
-        
+
             <NavigationContainer>
                 {/* Render status bar*/}
                 <StatusBar style="dark"/>
@@ -67,6 +66,6 @@ export default function App() {
                     )}
                 </Stack.Navigator>
             </NavigationContainer>
-        
+
     );
 };

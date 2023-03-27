@@ -21,17 +21,17 @@ export const GROUP_ROUTES = {
 };
 
 export const EXPENSE_ROUTES = {
-    CREATE: `${BASE_URL}/expense`,
-    FIND_ALL: `${BASE_URL}/expense`,
-    FIND_BY_ID: (id) => `${BASE_URL}/expense/${id}`,
-    UPDATE_BY_ID: (id) => `${BASE_URL}/expense/${id}`,
-    DELETE_BY_ID: (id) => `${BASE_URL}/expense/${id}`,
+    CREATE: `${BASE_URL}/expenses`,
+    FIND_ALL: `${BASE_URL}/expenses`,
+    FIND_BY_ID: (id) => `${BASE_URL}/expenses/${id}`,
+    UPDATE_BY_ID: (id) => `${BASE_URL}/expenses/${id}`,
+    DELETE_BY_ID: (id) => `${BASE_URL}/expenses/${id}`,
     TRANSACTION: {
-        CREATE: (id) => `${BASE_URL}/expense/${id}/transaction`,
-        FIND_ALL: (id) => `${BASE_URL}/expense/${id}/transaction`,
-        FIND_BY_ID: (id, transactionId) => `${BASE_URL}/expense/${id}/transaction/${transactionId}`,
+        CREATE: (id) => `${BASE_URL}/expenses/${id}/transaction`,
+        FIND_ALL: (id) => `${BASE_URL}/expenses/${id}/transaction`,
+        FIND_BY_ID: (id, transactionId) => `${BASE_URL}/expenses/${id}/transaction/${transactionId}`,
         FIND_PENDING_TRANSACTIONS_BY_USER_ID: (id) => `${BASE_URL}/transactions/pending/${id}`,
-        UPDATE_BY_ID: (id, transactionId) => `${BASE_URL}/expense/${id}/transaction/${transactionId}`,
-        DELETE_BY_ID: (id, transactionId) => `${BASE_URL}/expense/${id}/transaction/${transactionId}`,
+        UPDATE_BY_ID: (id, transactionId) => `${BASE_URL}/expenses/${id}/transaction/${transactionId}`,
+        DELETE_BY_ID: (id, transactionId) => `${BASE_URL}/expenses/${id}/transaction/${transactionId}`,
     },
 };
