@@ -10,6 +10,8 @@ import Axios from "axios"
 import {GROUP_ROUTES} from "../../assets/constants/routes";
 import * as SecureStore from "expo-secure-store";
 import {STRINGS} from "../../assets/constants/strings";
+import Icon from "react-native-vector-icons/Ionicons";
+import CreateGroup from '../Main/Group Screens/CreateGroup';
 
 
 export default function Groups({navigation}) {
@@ -87,8 +89,11 @@ export default function Groups({navigation}) {
             <View style={styles.bottomSheet}>
                 <View style={styles.compTitle}>
                     <Text style={styles.compTitleStyle}>{STRINGS.GROUPS}</Text>
+                    <TouchableOpacity style={styles.createGroupIcon} onPress={()=>navigation.navigate('CreateGroup',)} >
+                        <Icon name="add-circle" size={30} color="#000" />
+                    </TouchableOpacity>
                 </View>
-                <View style={{height: '100%'}}>
+                <View style={{height: 620}}>
                     <ScrollView style={styles.scrollView}
                                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
                         {list.groups && list.groups.map((group, index) => (
@@ -124,7 +129,7 @@ export default function Groups({navigation}) {
 const styles = StyleSheet.create({
     bottomSheet: {
         height: '100%', //change this after design it
-        backgroundColor: COLORS.BG, width: '100%', borderTopEndRadius: 50, borderTopStartRadius: 50, marginTop: 10
+        backgroundColor: COLORS.BG, width: '100%', borderTopEndRadius: 50, borderTopStartRadius: 50, marginTop: 100
     }, container: {
         paddingTop: 10, backgroundColor: COLORS.PRIMARY,
     }, groupSlot: {
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "column"
     }, compTitle: {
-        marginTop: 30, justifyContent: "center", alignItems: "left", marginHorizontal: 30,
+        marginTop: 30, justifyContent: "center", alignItems: "flex-start", marginHorizontal: 30, flexDirection:"row", justifyContent:"space-between"
     }, compTitleStyle: {
         fontWeight: 'bold', fontSize: 25
     }, scrollView: {
@@ -153,6 +158,9 @@ const styles = StyleSheet.create({
     },
     groupBalance: {
         fontWeight: 'bold'
+    },
+    createGroupIcon:{
+        marginTop: 5
     },
     membersImageRow: {
         flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10
