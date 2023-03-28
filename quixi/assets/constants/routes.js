@@ -1,5 +1,5 @@
 
-const BASE_URL = 'https://88f0-45-121-88-184.in.ngrok.io'+'/api';
+const BASE_URL = 'https://033d-2402-4000-b18f-6fc8-f5ba-a45f-95f2-48a4.ap.ngrok.io'+'/api';
 
 
 export const USER_ROUTES = {
