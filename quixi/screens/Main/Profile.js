@@ -118,9 +118,6 @@ export default function Profile({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.notificationIcon}>
-        <Icon name="notifications" size={25} color="#fff" />
-      </TouchableOpacity>
       <View style={styles.bottomSheet}>
         <ScrollView
           style={styles.scrollView}
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
   bottomSheet: {
     height: "100%", //change this after design it
     backgroundColor: COLORS.BG,
-    width: "98%",
+    width: "100%",
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
     marginTop: Platform.OS === "android" ? 60 : 10, // adjust for Android status bar
@@ -225,8 +222,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   profilePic: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 40,
     borderColor: "#203b86",
     borderWidth: 4,

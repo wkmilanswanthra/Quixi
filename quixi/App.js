@@ -30,7 +30,8 @@ export default function App() {
                 console.log('Got token from secure storage=',token);
                 if (token) {
                     // If token exists, validate it
-                    const authenticated=await validateToken(token.replaceAll('"', ''));
+                    const authenticated = validateToken(token.replaceAll('"', ''));
+                    console.log(authenticated)
 
                     // If validation succeeds, set user token
                     if(authenticated){setUserToken(token.replaceAll('"', ''));}
@@ -41,14 +42,13 @@ export default function App() {
                 // Show error message to user
             }
         }
-
         checkAuth();
     }, []);
 
 
     return (
         // Render navigation container
-        
+
             <NavigationContainer>
                 {/* Render status bar*/}
                 <StatusBar style="dark"/>
@@ -67,6 +67,6 @@ export default function App() {
                     )}
                 </Stack.Navigator>
             </NavigationContainer>
-        
+
     );
 };
