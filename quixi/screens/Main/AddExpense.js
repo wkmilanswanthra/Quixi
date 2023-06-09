@@ -20,6 +20,7 @@ import { EXPENSE_ROUTES, USER_ROUTES } from "../../assets/constants/routes";
 import Axios from "axios";
 import axios from "axios";
 
+
 export default function AddExpense({ navigation }) {
   const [userId, setUserId] = useState("");
   const [currentUser, setCurrentUser] = useState({});
@@ -45,6 +46,7 @@ export default function AddExpense({ navigation }) {
     console.log("second use effect");
     if (token !== "" && userId !== "") {
       getUserInfo();
+
     }
   }, [token, userId]);
 
@@ -391,3 +393,4 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
 });
+
