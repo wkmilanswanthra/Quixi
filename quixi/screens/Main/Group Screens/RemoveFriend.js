@@ -1,26 +1,8 @@
-// import * as React from 'react';
-// import {Text, View, StyleSheet} from "react-native";
-
-// export default function AddMembers({navigation}) {
-//     return (
-//         <View style={styles.samples}>
-//             <Text>This is the Add Members page</Text>
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     samples: {
-//         flex: 1,
-//         backgroundColor: '#fff',
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     }
-// });
 import React, { useState } from 'react';
-import { StyleSheet, Text,View,Image,TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text,View,Image,TouchableOpacity, ScrollView, Modal, Button} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SearchBar } from 'react-native-elements';
+import { AntDesign } from '@expo/vector-icons';
 
 const originalData=[ { id:"1",name: 'Mathew Sampson', amount: 1555, imageUrl: 'https://picsum.photos/id/100/200/200' },
 { id:"2", name: 'John Doe', amount: 200, imageUrl: 'https://picsum.photos/id/101/200/200' },
@@ -40,6 +22,17 @@ const AddFriend = ({ navigation }) => {
       setSearchResults(filteredData);
   };
 
+  const [selectedFriend, setSelectedFriend] = useState(null);
+
+  const handleDelete = () => {
+    // Perform the deletion logic here
+    if (selectedFriend) {
+      // Delete the friend
+      console.log('Deleting friend:', selectedFriend);
+      setSelectedFriend(null);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -55,6 +48,7 @@ const AddFriend = ({ navigation }) => {
             inputStyle={{ color: '#9B9B9B' }}
           />
         </View>
+        <View><Text style={styles.titleOfFriendList} >Members on GroupName</Text></View>
 
         <View style={{height: 500}}>
         <ScrollView>
@@ -65,6 +59,7 @@ const AddFriend = ({ navigation }) => {
               <View style={styles.friendName}>
                 <Text>{item.name}</Text>
               </View>
+              
             </View>
               ))
         : originalData.map((item) => (
@@ -73,13 +68,25 @@ const AddFriend = ({ navigation }) => {
               <View style={styles.friendName}>
                 <Text>{item.name}</Text>
               </View>
+              <TouchableOpacity style={styles.removeFriendIcon} onPress={() => setSelectedFriend(item)}><AntDesign name="delete" size={24} color="red" /></TouchableOpacity>
             </View>
+            
           ))}
+
+<Modal visible={selectedFriend !== null} animationType="fade" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>Are you sure you want to Remove this MemberNamee?</Text>
+            <View style={styles.modalButtons}>
+              <Button title="Cancel" onPress={() => setSelectedFriend(null)} />
+              <Button title="OK" onPress={handleDelete} color="red" />
+            </View>
+          </View>
+        </View>
+      </Modal>
         </ScrollView>
         </View>    
-            <TouchableOpacity style={styles.buttonAdd}>
-              <Text style={styles.buttonAddText}>Add</Text>
-            </TouchableOpacity>
+            
         
 
       </View>
@@ -141,7 +148,7 @@ export const styles = StyleSheet.create({
 
   buttonAdd: {
     position: 'absolute',
-    bottom: 150,
+    bottom: 100,
     right: 20,
     width: 100,
     height: 40,
@@ -157,6 +164,36 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+
+  removeFriendIcon:{
+    marginTop:25,
+    position: 'absolute',
+    right: 30,
+
+  },
+
+  titleOfFriendList:{
+    paddingLeft:20,
+    color:'grey'
+  },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 8,
+    width: 300,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 20,
   },
 
 })

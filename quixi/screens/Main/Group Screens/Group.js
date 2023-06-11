@@ -64,8 +64,8 @@ const Group = ({navigation, route}) => {
         <SafeAreaView style={styles.container}>
             <StatusBar style="light"/>
             <View style={styles.bottomSheet}>
-                <TouchableOpacity style={styles.addMembersSign}>
-                    <Ionicons name="add-circle-outline" size={24} color="black"/>
+                <TouchableOpacity style={styles.addMembersSign} >
+                    <Ionicons name="add-circle-outline" size={24} color="black" onPress={() => navigation.navigate('AddMembers')}/>
                     <Text> Add members</Text>
                 </TouchableOpacity>
                 <View style={styles.btnSet}>
@@ -76,7 +76,7 @@ const Group = ({navigation, route}) => {
                         <Text style={styles.btnSetText}>Balance</Text>
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <Text style={styles.btnSetText}>View Charts</Text>
+                        <Text style={styles.btnSetText} onPress={() => navigation.navigate('Charts')}>View Charts</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{marginTop: 30}}>
@@ -85,7 +85,7 @@ const Group = ({navigation, route}) => {
                         <Text style={[styles.groupIconText, {color: 'black'}]}>Copy Group Link</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.groupPageIconLine}>
+                    <TouchableOpacity style={styles.groupPageIconLine} onPress={() => navigation.navigate('EditGroup')}>
                         <Ionicons name="create" size={24} color="grey"/>
                         <Text style={[styles.groupIconText, {color: 'grey'}]}>Edit Group</Text>
                     </TouchableOpacity>
