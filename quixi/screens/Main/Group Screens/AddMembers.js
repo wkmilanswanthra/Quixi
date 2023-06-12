@@ -1,162 +1,277 @@
-// import * as React from 'react';
-// import {Text, View, StyleSheet} from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  TouchableHighlight,
+} from "react-native";
+import { ListItem, SearchBar } from "react-native-elements";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import { GROUP_ROUTES, USER_ROUTES } from "../../../assets/constants/routes";
+import Checkbox from "expo-checkbox";
+import qs from "qs";
+import { COLORS } from "../../../assets/constants/colors";
+import { Rating, AirbnbRating } from "react-native-ratings";
+export default function AddMembers({ navigation, route }) {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [title, setTitle] = useState([]);
+  const [token, setToken] = useState("");
+  const [userId, setUserId] = useState("");
+  const [groupId, setGroupId] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [originalData, setOriginalData] = useState([]);
 
-// export default function AddMembers({navigation}) {
-//     return (
-//         <View style={styles.samples}>
-//             <Text>This is the Add Members page</Text>
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     samples: {
-//         flex: 1,
-//         backgroundColor: '#fff',
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     }
-// });
-import React, { useState } from 'react';
-import { StyleSheet, Text,View,Image,TouchableOpacity, ScrollView } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { SearchBar } from 'react-native-elements';
-
-const originalData=[ { id:"1",name: 'Mathew Sampson', amount: 1555, imageUrl: 'https://picsum.photos/id/100/200/200' },
-{ id:"2", name: 'John Doe', amount: 200, imageUrl: 'https://picsum.photos/id/101/200/200' },
-{id:"3", name: 'Jane Smith', amount: 500, imageUrl: 'https://picsum.photos/id/102/200/200' },]
-
-const AddFriend = ({ navigation }) => {
-  
-  const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-
-  const handleSearch = (text) => {
-    setSearchText(text);
-    // Perform search logic here using the search text
-    const filteredData = originalData.filter((item) =>
-        item.name.toLowerCase().includes(text.toLowerCase())
-      );
-      setSearchResults(filteredData);
+  const members = route.params?.members;
+  const setMembers = route.params?.setMembers;
+  useEffect(() => {
+    async function fetchData() {
+      await getToken();
+      await getUserId();
+    }
+    fetchData();
+    if (route.params?.groupId) {
+      setGroupId(route.params.groupId);
+    }
+  }, []);
+  useEffect(() => {
+    if (userId !== "" && token !== "") {
+      getMovies();
+    }
+  }, [userId, token, searchQuery]);
+  const getUserId = async () => {
+    const userID = await SecureStore.getItemAsync("userId");
+    setUserId(userID);
   };
-
+  const getToken = async () => {
+    const token = await SecureStore.getItemAsync("token");
+    setToken(token);
+  };
+  
+ const getMovies = async () => {
+    try {
+      const response = await axios.get(USER_ROUTES.FIND, {
+        headers: { Authorization: "Bearer " + token.replaceAll('"', "") },
+      });
+  
+      const filteredData = response.data.filter((element) =>
+        element.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+  
+      const updatedData = filteredData.map(
+        ({ _id, name, isGroupChecked, profileImgUrl, rating }) => ({
+          _id,
+          name,
+          isGroupChecked,
+          profileImgUrl,
+          rating,
+        })
+      );
+  
+      updatedData.forEach((element) => {
+        element.isGroupChecked = false;
+        if (members) {
+          members.forEach((member) => {
+            if (element._id === member._id) {
+              element.isGroupChecked = true;
+            }
+          });
+        }
+      });
+  
+      setData(updatedData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const setList = async () => {
+    const list = [];
+    data.forEach((element) => {
+      if (element.isGroupChecked) {
+        list.push(element);
+      }
+    });
+    const arr = [];
+    // arr.push(userId.replaceAll('"', ""));
+    list.forEach((element) => {
+      arr.push(element._id);
+    });
+    console.log(JSON.stringify(arr));
+    const url = GROUP_ROUTES.UPDATE(groupId);
+    // const datas = { members: arr };
+    // console.log(datas);
+    var config = {
+      method: "patch",
+      url: url,
+      headers: {
+        Authorization: `Bearer ${token.replaceAll('"', "")}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: qs.stringify({ members: arr }),
+    };
+    const res = await axios(config);
+    console.log(res.data);
+    setMembers(list);
+    navigation.goBack();
+  };
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    if (text === "") {
+      setData(originalData); // Set the original unfiltered data when the search query is cleared
+    }
+    const filteredData = originalData.filter((element) =>
+      element.name.toLowerCase().includes(text.toLowerCase())
+    );
+    setData(filteredData);
+  };
+  
   return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
-      <View style={styles.bottomSheet}>
-        
-        <View style={styles.searchFriend}>
-          <SearchBar
-            placeholder="Search"
-            onChangeText={handleSearch}
-            value={searchText}
-            containerStyle={{ backgroundColor:"#F2F2F2" ,border:0, height:0 ,borderBottomWidth: 0,borderTopWidth: 0}} //there is odd thing prevail
-            inputContainerStyle={{ backgroundColor: '#D9D9D9', height: 40, borderRadius:10 }}
-            inputStyle={{ color: '#9B9B9B' }}
-          />
-        </View>
+    <>
+      <View style={styles.container}>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <View style={styles.header}>
+           
+            <SearchBar
+              style={styles.search}
+              placeholder="Name, E-mail or Phone No"
+              lightTheme
+              autoCorrect={false}
+              onChangeText={handleSearch}
+              value={searchQuery}
+            />
 
-        <View style={{height: 500}}>
-        <ScrollView>
-        {searchText !== '' 
-              ? searchResults.map((item) => (
-            <View style={styles.friendContainer} key={item.id}>
-              <Image source={ {uri: item.imageUrl }} style={styles.freindImage} />
-              <View style={styles.friendName}>
-                <Text>{item.name}</Text>
-              </View>
-            </View>
-              ))
-        : originalData.map((item) => (
-          <View style={styles.friendContainer} key={item.id}>
-              <Image source={ {uri: item.imageUrl }} style={styles.freindImage} />
-              <View style={styles.friendName}>
-                <Text>{item.name}</Text>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-        </View>    
-            <TouchableOpacity style={styles.buttonAdd}>
-              <Text style={styles.buttonAddText}>Add</Text>
-            </TouchableOpacity>
-        
-
+            <FlatList
+              style={styles.flatlist}
+              data={data}
+              keyExtractor={({ _id }) => _id}
+              renderItem={({ item }) => (
+                <View style={styles.item}>
+                  <Image
+                    style={styles.img}
+                    source={{
+                      uri:
+                        item.profileImgUrl || "https://picsum.photos/200/200",
+                    }}
+                  />
+                  <View style={{}}>
+                    <Text
+                      style={{
+                        marginBottom: -20,
+                        marginLeft: 10,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    <AirbnbRating
+                      count={5}
+                      defaultRating={item.rating}
+                      size={15}
+                      reviewSize={0}
+                      isDisabled={true}
+                    />
+                  </View>
+                  <Checkbox
+                    disabled={item._id === userId.replaceAll('"', "")}
+                    style={styles.checkbox}
+                    value={item.isGroupChecked}
+                    onValueChange={(newValue) => {
+                      const updatedData = data.map((dataItem) => {
+                        if (dataItem._id === item._id) {
+                          return { ...dataItem, isGroupChecked: newValue };
+                        }
+                        return dataItem;
+                      });
+                      setData(updatedData);
+                    }}
+                    color="#000"
+                  />
+                </View>
+              )}
+            />
+          </View>
+        )}
       </View>
-    </View>
+      <View style={styles.btn}>
+        <TouchableHighlight onPress={setList}>
+          <Text style={styles.btn1}>Ok</Text>
+        </TouchableHighlight>
+      </View>
+    </>
   );
-};
-
-
-
-
-
-export default AddFriend;
-
-export const styles = StyleSheet.create({
-
-//   ###############Styles for page layout################
-
+} 
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#010b40',
   },
-
-  bottomSheet:{
-    height:'100%', 
-    backgroundColor:'#F2F2F2',
-    width:'100%',
-    borderTopEndRadius:50,
-    borderTopStartRadius:50,
-    marginTop:60
+  header: {
+    marginTop: 75,
+    //padding: 10,
   },
-
-//###Specific styles for screen### 
-
-  searchFriend:{
-    marginTop:10,
-    marginHorizontal:20,
-    borderRadius:20,
-    border:1,
-    height:80
+  flatlist: {
+    marginTop: 10,
+    
   },
-
-  friendContainer: {
-    flexDirection: 'row',
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    //paddingLeft: 10,
+    paddingTop: 25,
+  },
+  view1: {
+    width: 50,
+    height: 50,
+    resizeMode: "contain",
+    backgroundColor: "white",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 15,
+    //margin: 10,
+    marginRight: 50,
+  },
+  search: {
+    //width:150
+  },
+  btn1: {
+    borderWidth: 2,
+    padding: 15,
+    //paddingHorizontal:50,
+    borderColor: "black",
+    color: "white",
+    backgroundColor: "#010B40",
+    fontSize: 18,
+  },
+  btn: {
+    //alignItems:'flex-end',
+    marginTop: 20,
+    marginRight: 20,
+    marginLeft: "75%",
+    height: 50,
+    marginBottom: 50,
+  },
+  checkbox: {
+    marginLeft: "auto",
+    marginRight: 5,
+    //marginLeft:50
+  },
+  img: {
+    width: 50,
+    height: 50,
+    resizeMode: "contain",
+    backgroundColor: "white",
+    borderColor: COLORS.BUTTON,
+    borderWidth: 2,
+    borderRadius: 25,
     margin: 10,
   },
-
-  friendName: {
-    paddingTop:17,
-    marginLeft: 10,
-  },
-
-  freindImage:{
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    borderWidth: 2,
-    margin:10,
-  },
-
-  buttonAdd: {
-    position: 'absolute',
-    bottom: 150,
-    right: 20,
-    width: 100,
-    height: 40,
-    backgroundColor: '#010b40',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 15,
-    borderWidth: 1,
-    marginHorizontal: 20,
-  },
-
-  buttonAddText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-
-})
+});
