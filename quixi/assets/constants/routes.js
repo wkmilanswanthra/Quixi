@@ -23,6 +23,7 @@ export const EXPENSE_ROUTES = {
   CREATE: `${BASE_URL}/expenses`,
   FIND_ALL: `${BASE_URL}/expenses`,
   FIND_BY_ID: (id) => `${BASE_URL}/expenses/${id}`,
+  FIND_NON_GROUP_BY_ID: (id) => `${BASE_URL}/expenses/non/${id}`,
   UPDATE_BY_ID: (id) => `${BASE_URL}/expenses/${id}`,
   DELETE_BY_ID: (id) => `${BASE_URL}/expenses/${id}`,
   TRANSACTION: {
@@ -37,4 +38,21 @@ export const EXPENSE_ROUTES = {
     DELETE_BY_ID: (id, transactionId) =>
       `${BASE_URL}/expenses/${id}/transaction/${transactionId}`,
   },
+};
+
+export const TRANSACTION_ROUTES = {
+  CREATE: `${BASE_URL}/transactions`,
+  FIND_ALL: `${BASE_URL}/transactions`,
+  FIND_BY_ID: (id) => `${BASE_URL}/transactions/${id}`,
+  UPDATE_BY_ID: (id) => `${BASE_URL}/transactions/${id}`,
+  DELETE_BY_ID: (id) => `${BASE_URL}/transactions/${id}`,
+};
+
+export const PAYMENT_ROUTES = {
+  CREATE: `${BASE_URL}/payments`,
+  FIND: `${BASE_URL}/payments`,
+  FIND_BY_ID: (id) => `${BASE_URL}/payments/${id}`,
+  FIND_ALL_BY_USER_ID: (id) => `${BASE_URL}/payments/user/${id}`,
+  UPDATE: (id) => `${BASE_URL}/payments/${id}`,
+  DELETE: (id) => `${BASE_URL}/payments/${id}`,
 };
