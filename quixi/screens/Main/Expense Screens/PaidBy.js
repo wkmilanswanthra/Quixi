@@ -14,6 +14,7 @@ import Checkbox from "expo-checkbox";
 import { FontAwesome } from "@expo/vector-icons";
 import PaidAmount from "./PaidAmount";
 import AddExpense from "../../Main/AddExpense";
+import { COLORS } from "../../../assets/constants/colors";
 
 const SplitAmount = ({ navigation, route }) => {
   const [isLoading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const SplitAmount = ({ navigation, route }) => {
   const splitAmong = route.params?.splitAmong;
   const user = route.params?.user;
 
-  console.log("paidBy", paidBy);
+  console.log("paidBy ------------------------------------");
 
   useEffect(() => {
     const combinedData = [...splitAmong, user];
@@ -70,8 +71,10 @@ const SplitAmount = ({ navigation, route }) => {
             renderItem={({ item }) => (
               <View style={styles.item}>
                 <Image
-                  style={styles.view1}
-                  source={require("../../../assets/images/person.jpg")}
+                  style={styles.img}
+                  source={{
+                    uri: item.profileImgUrl || "https://picsum.photos/200/200",
+                  }}
                 />
                 <Text>{item.name}</Text>
                 <Checkbox
@@ -174,5 +177,15 @@ const styles = StyleSheet.create({
     marginLeft: "75%",
     height: 50,
     marginBottom: 50,
+  },
+  img: {
+    width: 50,
+    height: 50,
+    resizeMode: "contain",
+    backgroundColor: "white",
+    borderColor: COLORS.BUTTON,
+    borderWidth: 2,
+    borderRadius: 25,
+    margin: 10,
   },
 });

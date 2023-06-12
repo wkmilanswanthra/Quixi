@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Image } from 'react-native';
+import React, { useState } from "react";
+import { View, TextInput, Button, StyleSheet, Text, Image } from "react-native";
 
-export default function Paypal ({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [value, setValue] = useState('');
-  const [person,setPerson]= useState('');
+export default function Paypal({ navigation, route }) {
+  const [email, setEmail] = useState("");
+  const [value, setValue] = useState("");
+  const [person, setPerson] = useState("");
 
   const handleInputChange = (text) => {
     // filter out any non-numeric characters
-    const numericValue = text.replace(/[^0-9]/g, '');
+    const numericValue = text.replace(/[^0-9]/g, "");
     setValue(numericValue);
   };
 
@@ -16,24 +16,28 @@ export default function Paypal ({ navigation }) {
     setEmail(text);
   };
 
-  const hadnlePersonChange=(text)=>{
+  const hadnlePersonChange = (text) => {
     setPerson(text);
-  }
+  };
 
   const handleSubmit = () => {
     // handle submitting the form and navigating to the next page
-    navigation.navigate('NextPage');
+    navigation.navigate("NextPage");
   };
 
   return (
     <View>
-      <View style={{ //flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 20 }}>
+      <View
+        style={{
+          //flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 40,
+          marginBottom: 20,
+        }}
+      >
         <Image
-          source={require("../assets/paypal.png")}
+          source={require("../../../assets/images/food.png")}
           style={{ width: 105, height: 120 }}
         />
       </View>
@@ -68,23 +72,23 @@ export default function Paypal ({ navigation }) {
       <Button style={styles.button} title="Submit" onPress={handleSubmit} />
     </View>
   );
-};
+}
 
-const styles=StyleSheet.create({
+const styles = StyleSheet.create({
   text: {
-    textAlign: 'left',
+    textAlign: "left",
     marginLeft: 10,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     margin: 10,
     padding: 10,
   },
-  button:{
+  button: {
     margin: 10,
-    padding:10,
-    color:'black',
-  }
+    padding: 10,
+    color: "black",
+  },
 });

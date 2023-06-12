@@ -57,8 +57,15 @@ export default function Groups({ navigation }) {
 
     Axios(config)
       .then(function (response) {
+        response.data.groups.push({
+          _id: "00000000000000000000000",
+          name: "Non group Expenses",
+          members: [],
+          createdBy: userId,
+          description: "Expenses not associated with any group",
+          category: "Misc",
+        });
         setList(response.data);
-        console.log("list", list);
         setRefreshing(false);
       })
       .catch(function (error) {
@@ -79,7 +86,11 @@ export default function Groups({ navigation }) {
 
   function handlePress(id) {
     console.log(id);
-    navigation.navigate("Group", { groupId: id });
+    if (id == "00000000000000000000000") {
+      navigation.navigate("NonGroupExpenses", { userId: userId, token: token });
+      return;
+    }
+    navigation.navigate("Group", { groupId: id, list: list, setList: setList });
   }
 
   function onRefresh() {

@@ -19,9 +19,9 @@ import * as SecureStore from "expo-secure-store";
 import { EXPENSE_ROUTES, USER_ROUTES } from "../../assets/constants/routes";
 import Axios from "axios";
 import axios from "axios";
+import route from "color-convert/route";
 
-
-export default function AddExpense({ navigation }) {
+export default function AddExpense({ navigation, route }) {
   const [userId, setUserId] = useState("");
   const [currentUser, setCurrentUser] = useState({});
   const [token, setToken] = useState("");
@@ -31,9 +31,21 @@ export default function AddExpense({ navigation }) {
   const [receipt, setReceipt] = useState("");
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
+  const [isGroup, setIsGroup] = useState(false);
+
+  const { expenseList = [], setExpenseList = () => {} } = route.params || {};
 
   useEffect(() => {
-    console.log("first use effect");
+    if (route.params?.groupId) {
+      setIsGroup(true);
+      console.log("group id = ", route.params.groupId);
+      route.params.members = route.params.members.filter(
+        (item) => item._id !== userId.replaceAll('"', "")
+      );
+      setSplitAmong(route.params.members);
+      console.log("group members = ", route.params.members);
+    }
+
     async function fetchData() {
       await getToken();
       await getUserId();
@@ -43,10 +55,8 @@ export default function AddExpense({ navigation }) {
   }, []);
 
   useEffect(() => {
-    console.log("second use effect");
     if (token !== "" && userId !== "") {
       getUserInfo();
-
     }
   }, [token, userId]);
 
@@ -69,7 +79,6 @@ export default function AddExpense({ navigation }) {
         },
       }
     );
-    console.log(userInfo.data);
     const { _id, name, profileImgUrl } = userInfo.data;
 
     const user = { _id, name, profileImgUrl };
@@ -79,15 +88,25 @@ export default function AddExpense({ navigation }) {
   };
 
   function goToAddMembers() {
-    navigation.navigate("AddMembers", {
-      setSplitAmong: setSplitAmong,
-      splitAmong: splitAmong,
-      token: token,
-      userId: userId,
-    });
+    if (!isGroup) {
+      navigation.navigate("AddMembers", {
+        setSplitAmong: setSplitAmong,
+        splitAmong: splitAmong,
+        token: token,
+        userId: userId,
+      });
+    } else {
+      navigation.navigate("SplitAmong", {
+        members: route.params.members,
+        splitAmong: splitAmong,
+        setSplitAmong: setSplitAmong,
+      });
+    }
   }
 
   function goToSplitAmong() {
+    console.log("split among = ", splitAmong);
+    console.log("paid by = ", paidBy);
     navigation.navigate("PaidBy", {
       setPaidBy: setPaidBy,
       paidBy: paidBy,
@@ -103,10 +122,8 @@ export default function AddExpense({ navigation }) {
     });
   }
 
-  function createExpense() {
+  function createNonGroupExpense() {
     const members = {};
-    console.log("amount = ", parseFloat(amount));
-    console.log("members = ", members);
     if (!amount || parseFloat(amount) <= 0) {
       alert("Please enter amount");
       return;
@@ -141,11 +158,13 @@ export default function AddExpense({ navigation }) {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         data: {
-          contribution: JSON.stringify(contribution),
+          contribution: JSON.stringify(members),
           name: name,
           amount: parseFloat(amount),
           createdBy: userId.replaceAll('"', ""),
           splitMethod: "equal",
+          groupExpense: false,
+          summary: members,
         },
       };
       console.log(config);
@@ -162,10 +181,74 @@ export default function AddExpense({ navigation }) {
     }
   }
 
+  const createGroupExpense = () => {
+    console.log("group expense");
+    console.log("split among = ", splitAmong);
+    console.log("paid by = ", paidBy);
+    const members = {};
+    if (!amount || parseFloat(amount) <= 0) {
+      alert("Please enter amount");
+      return;
+    }
+    if (splitAmong.length !== 0) {
+      console.log("split among = ", splitAmong);
+      splitAmong.map((item) => {
+        members[item._id] = 0;
+      });
+      members[currentUser._id] = 0;
+    } else {
+      alert("Please add members");
+      return;
+    }
+    console.log("members = ", members);
+    if (paidBy.length !== 0) {
+      console.log("paid by = ", paidBy);
+      const div = paidBy.length;
+      paidBy.forEach((item) => {
+        members[item._id] = (parseFloat(amount) / div).toFixed(2);
+      });
+    }
+    console.log("members = ", members);
+    setContribution(members);
+    if (contribution) {
+      const url = EXPENSE_ROUTES.CREATE;
+      const config = {
+        method: "post",
+        url: url,
+        headers: {
+          Authorization: "Bearer " + token.replaceAll('"', ""),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data: {
+          contribution: JSON.stringify(members),
+          name: name,
+          amount: parseFloat(amount),
+          createdBy: userId.replaceAll('"', ""),
+          splitMethod: "equal",
+          group: route.params.groupId,
+          groupExpense: true,
+        },
+      };
+      console.log(config);
+      Axios(config)
+        .then((response) => {
+          console.log("created Expense = ", response.data);
+          expenseList.push(response.data.expense);
+          setExpenseList(expenseList);
+          navigation.goBack();
+        })
+        .catch((error) => {
+          console.log("create Expense error = ", error);
+          alert("Error creating expense");
+          navigation.goBack();
+        });
+    }
+  };
+
   const handleSubmit = () => {
     if (token && userId) {
-      console.log("creating expense");
-      createExpense();
+      if (!isGroup) createNonGroupExpense();
+      else createGroupExpense();
     }
   };
 
@@ -182,10 +265,9 @@ export default function AddExpense({ navigation }) {
               <Text style={styles.text2}>Members</Text>
               <View style={[styles.view4, { marginTop: 30 }]}>
                 <ScrollView style={styles.view3} horizontal={true}>
-                  {splitAmong.map((item, index) => {
-                    console.log("item = ", item);
-                    return (
-                      <>
+                  {splitAmong &&
+                    splitAmong.map((item, index) => {
+                      return (
                         <Image
                           key={index}
                           style={styles.img}
@@ -193,10 +275,10 @@ export default function AddExpense({ navigation }) {
                             uri: item.image || "https://picsum.photos/200/200",
                           }}
                         ></Image>
-                      </>
-                    );
-                  })}
+                      );
+                    })}
                 </ScrollView>
+
                 <TouchableOpacity style={styles.view1} onPress={goToAddMembers}>
                   <Ionicons name="add-circle" size={40} color="black" />
                 </TouchableOpacity>
@@ -227,13 +309,14 @@ export default function AddExpense({ navigation }) {
               <View style={[styles.view4, { marginTop: 30 }]}>
                 <ScrollView style={styles.view3} horizontal={true}>
                   {paidBy.map((item, index) => {
-                    console.log("item = ", item);
                     return (
                       <Image
                         key={index}
                         style={styles.img}
                         source={{
-                          uri: item.image || "https://picsum.photos/200/200",
+                          uri:
+                            item.profileImgUrl ||
+                            "https://picsum.photos/200/200",
                         }}
                       ></Image>
                     );
@@ -274,7 +357,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   container: {
-    paddingTop: 10,
+    paddingTop: 40,
     backgroundColor: COLORS.PRIMARY,
   },
   compTitle: {
@@ -393,4 +476,3 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
 });
-

@@ -51,7 +51,7 @@ export default function Profile({ navigation, route }) {
   }
 
   async function getUserData() {
-    const url = USER_ROUTES.FIND + "?id=" + userId.replaceAll('"', "");
+    const url = USER_ROUTES.FIND_BY_ID(userId.replaceAll('"', ""));
     console.log(url);
     let config = {
       method: "get",
@@ -115,6 +115,7 @@ export default function Profile({ navigation, route }) {
         break;
     }
   }
+  console.log(user);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -133,7 +134,10 @@ export default function Profile({ navigation, route }) {
               source={{ uri: user.profileImgUrl }}
               style={styles.profilePic}
             />
-            <TouchableOpacity style={styles.title} onPress={() => handlePress("editAccount")}>
+            <TouchableOpacity
+              style={styles.title}
+              onPress={() => handlePress("editAccount")}
+            >
               <Text style={styles.username}>{user.name}</Text>
               <Icon name="create-outline" size={15} color="#333" />
             </TouchableOpacity>
@@ -193,10 +197,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: Platform.OS === "android" ? 60 : 10, // adjust for Android status bar
+    marginTop: Platform.OS === "android" ? 70 : 10, // adjust for Android status bar
   },
   container: {
-    paddingTop: 50,
+    paddingTop: 10,
     backgroundColor: COLORS.PRIMARY,
     alignItems: "center",
     justifyContent: "center",
@@ -207,9 +211,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 20,
   },
-  title:{
+  title: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   compTitle: {
     marginTop: 30,

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Friends from "../screens/Main/Friends";
+import FriendsNavigator from "../navigation/FriendsNavigator";
 import ProfileNavigator from "./ProfileNavigator";
 import GroupNavigator from "./GroupNavigator";
 import Activity from "../screens/Main/Activity";
@@ -26,7 +27,7 @@ export default function HomeNavigator({ route }) {
           let iconName;
           if (route.name === "GroupNavigator") {
             iconName = focused ? "ios-home-sharp" : "ios-home-outline";
-          } else if (route.name === "Friends") {
+          } else if (route.name === "FriendsNavigator") {
             iconName = focused ? "ios-people-sharp" : "ios-people-outline";
           } else if (route.name === "Activity") {
             iconName = focused ? "ios-timer-sharp" : "ios-timer-outline";
@@ -49,7 +50,7 @@ export default function HomeNavigator({ route }) {
         component={GroupNavigator}
         initialParams={{ setUserToken }}
       />
-      <Tab.Screen name="Friends" component={Friends} />
+      <Tab.Screen name="FriendsNavigator" component={FriendsNavigator} />
       <Tab.Screen
         name="ExpenseNavigator"
         component={ExpenseNavigator}
