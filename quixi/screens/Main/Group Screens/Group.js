@@ -85,7 +85,7 @@ const Group = ({navigation, route}) => {
                         <Text style={[styles.groupIconText, {color: 'black'}]}>Copy Group Link</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.groupPageIconLine} onPress={() => navigation.navigate('EditGroup')}>
+                    <TouchableOpacity style={styles.groupPageIconLine} onPress={() => navigation.navigate('EditGroup',{groupId:groupId})}>
                         <Ionicons name="create" size={24} color="grey"/>
                         <Text style={[styles.groupIconText, {color: 'grey'}]}>Edit Group</Text>
                     </TouchableOpacity>
