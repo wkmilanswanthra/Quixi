@@ -166,6 +166,15 @@ const Group = ({ navigation, route }) => {
     });
   };
 
+  const viewCharts = () => {
+    navigation.navigate("ViewCharts", {
+      group: group,
+      token: token,
+      userId: userId,
+      expenseList: expenseList,
+    });
+  }
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getGroupData();
@@ -201,20 +210,17 @@ const Group = ({ navigation, route }) => {
             })}
           </ScrollView>
         )}
-        <ScrollView style={styles.btnSet} horizontal={true}>
+        <View style={styles.btnSet} horizontal={true}>
           <TouchableOpacity onPress={goToAddExpense}>
             <Text style={styles.btnSetText}>Add Expense</Text>
           </TouchableOpacity>
           <TouchableOpacity>
             <Text style={styles.btnSetText}>Settle Up</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.btnSetText}>Balance</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={viewCharts}>
             <Text style={styles.btnSetText}>View Charts</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
         <ScrollView
           style={styles.scrollView}
           refreshControl={
@@ -296,6 +302,8 @@ const styles = StyleSheet.create({
     maxHeight: 50,
     marginTop: 30,
     marginHorizontal: 20,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   btnSetText: {
     fontSize: 13,
