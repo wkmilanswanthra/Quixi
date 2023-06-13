@@ -223,9 +223,9 @@ const Group = ({ navigation, route }) => {
           <TouchableOpacity onPress={goToAddExpense}>
             <Text style={styles.btnSetText}>Add Expense</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={settleUp}>
+          {/* <TouchableOpacity onPress={settleUp}>
             <Text style={styles.btnSetText}>Settle Up</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* <TouchableOpacity>
             <Text style={styles.btnSetText}>Balance</Text>
           </TouchableOpacity> */}
@@ -262,13 +262,7 @@ const Group = ({ navigation, route }) => {
             <Text style={styles.endText}> End of Expenses list </Text>
           </View>
         </ScrollView>
-        <ScrollView style={{ marginBottom: 10 }}>
-          <TouchableOpacity style={styles.groupPageIconLine}>
-            <Ionicons name="copy" size={24} color="black" />
-            <Text style={[styles.groupIconText, { color: "black" }]}>
-              Copy Group Link
-            </Text>
-          </TouchableOpacity>
+        <ScrollView style={{ marginTop: 10, maxHeight: 100 }}>
           <TouchableOpacity style={styles.groupPageIconLine}>
             <Ionicons name="create" size={24} color="grey" />
             <Text style={[styles.groupIconText, { color: "grey" }]}>
@@ -283,6 +277,12 @@ const Group = ({ navigation, route }) => {
             <Ionicons name="trash-outline" size={24} color="red" />
             <Text style={[styles.groupIconText, { color: "red" }]}>
               Delete Group
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.groupPageIconLine}>
+            <Ionicons name="copy" size={24} color="black" />
+            <Text style={[styles.groupIconText, { color: "black" }]}>
+              Copy Group Link
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   scrollView: {
-    maxHeight: 300,
+    maxHeight: 250,
     marginTop: 10,
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
