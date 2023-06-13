@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   TouchableHighlight,
+  Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { STRINGS } from "../../assets/constants/strings";
@@ -36,6 +37,15 @@ export default function AddExpense({ navigation, route }) {
   const { expenseList = [], setExpenseList = () => {} } = route.params || {};
 
   useEffect(() => {
+    async function fetchData() {
+      await getToken();
+      await getUserId();
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     if (route.params?.groupId) {
       setIsGroup(true);
       console.log("group id = ", route.params.groupId);
@@ -45,14 +55,7 @@ export default function AddExpense({ navigation, route }) {
       setSplitAmong(route.params.members);
       console.log("group members = ", route.params.members);
     }
-
-    async function fetchData() {
-      await getToken();
-      await getUserId();
-    }
-
-    fetchData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (token !== "" && userId !== "") {
@@ -171,6 +174,8 @@ export default function AddExpense({ navigation, route }) {
       Axios(config)
         .then((response) => {
           console.log("created Expense = ", response.data);
+          Alert.alert("Expense created");
+
           navigation.goBack();
         })
         .catch((error) => {
@@ -235,6 +240,8 @@ export default function AddExpense({ navigation, route }) {
           console.log("created Expense = ", response.data);
           expenseList.push(response.data.expense);
           setExpenseList(expenseList);
+          Alert.alert("Expense created");
+
           navigation.goBack();
         })
         .catch((error) => {
@@ -272,7 +279,9 @@ export default function AddExpense({ navigation, route }) {
                           key={index}
                           style={styles.img}
                           source={{
-                            uri: item.image || "https://picsum.photos/200/200",
+                            uri:
+                              item.profileImgUrl ||
+                              "https://picsum.photos/200/200",
                           }}
                         ></Image>
                       );

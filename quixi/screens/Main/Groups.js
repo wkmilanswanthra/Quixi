@@ -90,7 +90,12 @@ export default function Groups({ navigation }) {
       navigation.navigate("NonGroupExpenses", { userId: userId, token: token });
       return;
     }
-    navigation.navigate("Group", { groupId: id, list: list, setList: setList });
+    navigation.navigate("Group", {
+      groupId: id,
+      list: list,
+      setList: setList,
+      toke: token,
+    });
   }
 
   function onRefresh() {
