@@ -8,6 +8,7 @@ export const USER_ROUTES = {
   UPDATE: (id) => `${BASE_URL}/users/${id}`,
   DELETE: (id) => `${BASE_URL}/users/${id}`,
   VALIDATE: `${BASE_URL}/users/validate`,
+  UPDATE_PROFILE_IMAGE: (id) => `${BASE_URL}/users/${id}/profileImg`,
 };
 
 export const GROUP_ROUTES = {
