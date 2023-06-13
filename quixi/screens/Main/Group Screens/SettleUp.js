@@ -1,9 +1,40 @@
 import React from "react";
 import { SafeAreaView, Text, View, StatusBar, StyleSheet } from "react-native";
 import { COLORS } from "../../../assets/constants/colors";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { GROUP_ROUTES } from "../../../assets/constants/routes";
 
 const SettleUp = ({ navigation, route }) => {
   const { group, expenseList, token, userId } = route.params;
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if (group) {
+      getExpenseData();
+    }
+  }, []);
+
+  function getExpenseData() {
+    const url = GROUP_ROUTES.FIND_BY_ID(group._id);
+    let config = {
+      method: "get",
+      url: url,
+      headers: {
+        authorization: "Bearer " + token.replaceAll('"', ""),
+      },
+    };
+
+    Axios(config)
+      .then((response) => {
+        console.log(response.data);
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   console.log(expenseList);
 

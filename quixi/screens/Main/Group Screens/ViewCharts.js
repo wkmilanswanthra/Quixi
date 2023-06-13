@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import react, { useEffect } from "react";
-=======
-import react from "react";
->>>>>>> 1160ccf2d927a4d0d2e07b0ac7c28db998cc35e3
 import { Text, View, SafeAreaView, StyleSheet, StatusBar } from "react-native";
 import { COLORS } from "../../../assets/constants/colors";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
@@ -14,11 +10,6 @@ const ViewCharts = ({ navigation, route }) => {
   const { group, token, userId, expenseList } = route.params;
 
   const [transactions, setTransactions] = react.useState([]);
-<<<<<<< HEAD
-  const [payed, setPayed] = react.useState([]);
-  const [received, setReceived] = react.useState([]);
-=======
->>>>>>> 1160ccf2d927a4d0d2e07b0ac7c28db998cc35e3
 
   react.useEffect(() => {
     if (group) {
@@ -57,7 +48,6 @@ const ViewCharts = ({ navigation, route }) => {
     setTransactions(list);
   };
 
-<<<<<<< HEAD
   // useEffect(() => {
   //   if (transactions.length > 0) {
   //     setValues();
@@ -66,10 +56,6 @@ const ViewCharts = ({ navigation, route }) => {
 
   // console.log("Transactions: ", transactions);
 
-  
-
-=======
->>>>>>> 1160ccf2d927a4d0d2e07b0ac7c28db998cc35e3
   const data = [
     { quarter: 1, earnings: 13000 },
     { quarter: 2, earnings: 16500 },
@@ -77,7 +63,6 @@ const ViewCharts = ({ navigation, route }) => {
     { quarter: 4, earnings: 19000 },
   ];
 
-<<<<<<< HEAD
   // const setValues = () => {
   //   let payed = [];
   //   let received = [];
@@ -91,8 +76,6 @@ const ViewCharts = ({ navigation, route }) => {
   //   setPayed(payed);
   //   setReceived(received);
   // };
-=======
->>>>>>> 1160ccf2d927a4d0d2e07b0ac7c28db998cc35e3
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
