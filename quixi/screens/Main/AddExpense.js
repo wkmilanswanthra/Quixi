@@ -126,8 +126,10 @@ export default function AddExpense({ navigation, route }) {
   }
 
   function createNonGroupExpense() {
+    console.log(receipt);
+    let regExp = /[a-zA-Z]/g;
     const members = {};
-    if (!amount || parseFloat(amount) <= 0) {
+    if (parseFloat(amount) || !amount) {
       alert("Please enter amount");
       return;
     }
