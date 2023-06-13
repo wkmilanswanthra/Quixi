@@ -24,6 +24,9 @@ export default function Settings({ navigation, route }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const { user } = route.params;
+  console.log(user.settings);
+
   const handleChangeUsername = () => {
     // code to handle changing the user's username
     setUsername("");
@@ -41,10 +44,16 @@ export default function Settings({ navigation, route }) {
   function handlePress(action) {
     switch (action) {
       case "Appearence":
-        navigation.navigate("Appearence");
+        navigation.navigate("Appearence", {
+          settings: user.settings,
+          userId: user._id,
+        });
         break;
       case "Notifications":
-        navigation.navigate("Notifications");
+        navigation.navigate("Notifications", {
+          settings: user.settings,
+          userId: user._id,
+        });
         break;
       case "Privacy":
         navigation.navigate("Privacy");

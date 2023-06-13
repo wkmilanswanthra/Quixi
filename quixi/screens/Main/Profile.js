@@ -92,7 +92,10 @@ export default function Profile({ navigation, route }) {
         navigation.navigate("EditAccount");
         break;
       case "settings":
-        navigation.navigate("SettingsNavigator");
+        navigation.navigate("SettingsNavigator", {
+          screen: "Settings",
+          params: { user: user },
+        });
         break;
       case "requestAssistance":
         navigation.navigate("RequestAssistance");

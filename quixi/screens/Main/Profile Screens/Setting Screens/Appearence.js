@@ -17,10 +17,19 @@ import Axios from "axios";
 import { useEffect, useState } from "react";
 import { Switch } from "react-native-paper";
 import { COLORS } from "../../../../assets/constants/colors";
+import axios from "axios";
 
-export default function Appearence({ navigation }) {
+export default function Appearence({ navigation, route }) {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+  const { settings, userId } = route.params;
+
+  useEffect(() => {
+    if (settings) {
+      setIsSwitchOn(settings.darkMode);
+    }
+  }, [settings]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -97,8 +106,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4.84,
     elevation: 5,
-    flexDirection:"row",
-    justifyContent:"space-between"
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   buttonText: {
     marginLeft: 20,
