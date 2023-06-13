@@ -17,15 +17,55 @@ import Axios from "axios";
 import { useEffect, useState } from "react";
 import { Switch } from "react-native-paper";
 import { COLORS } from "../../../../assets/constants/colors";
+import axios from "axios";
+import { USER_ROUTES } from "../../../../assets/constants/routes";
 
-export default function Appearence({ navigation }) {
+export default function Appearence({ navigation, route }) {
   const [isSwitchOn1, setIsSwitchOn1] = useState(false);
   const [isSwitchOn2, setIsSwitchOn2] = useState(false);
   const [isSwitchOn3, setIsSwitchOn3] = useState(false);
 
-  const onToggleSwitch1 = () => setIsSwitchOn1(!isSwitchOn1);
-  const onToggleSwitch2 = () => setIsSwitchOn2(!isSwitchOn2);
-  const onToggleSwitch3 = () => setIsSwitchOn3(!isSwitchOn3);
+  const onToggleSwitch1 = () => {
+    setIsSwitchOn1(!isSwitchOn1);
+    saveGroupNotifications;
+  };
+  const onToggleSwitch2 = () => {
+    setIsSwitchOn2(!isSwitchOn2);
+    saveGroupNotifications;
+  };
+  const onToggleSwitch3 = () => {
+    setIsSwitchOn3(!isSwitchOn3);
+    saveGroupNotifications;
+  };
+
+  const { settings, userId } = route.params;
+
+  useEffect(() => {
+    if (settings) {
+      console.log(settings);
+      setIsSwitchOn1(settings.groupNotifications);
+      setIsSwitchOn2(settings.debtReceive);
+      setIsSwitchOn3(settings.addTogroup);
+    }
+  }, [settings]);
+
+  const saveGroupNotifications = async () => {
+    const url = USER_ROUTES.UPDATE(userId.replaceAll('"', ""));
+    const settings = {
+      groupNotifications: isSwitchOn1,
+      debtReceive: isSwitchOn2,
+      addTogroup: isSwitchOn3,
+    };
+    const config = {
+      method: "patch",
+      url: url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: settings,
+    };
+    await axios(config);
+  };
 
   return (
     <SafeAreaView style={styles.container}>

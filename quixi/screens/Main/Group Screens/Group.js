@@ -19,7 +19,7 @@ import { GROUP_ROUTES } from "../../../assets/constants/routes";
 import Axios from "axios";
 
 const Group = ({ navigation, route }) => {
-  const { groupId, list, setList } = route.params;
+  const { groupId, list, setList, toke } = route.params;
 
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
@@ -57,7 +57,7 @@ const Group = ({ navigation, route }) => {
       method: "get",
       url: url,
       headers: {
-        authorization: "Bearer " + token.replaceAll('"', ""),
+        authorization: "Bearer " + toke.replaceAll('"', ""),
       },
     };
     Axios(config)
@@ -136,7 +136,6 @@ const Group = ({ navigation, route }) => {
         });
     };
 
-    // Show confirmation dialog
     Alert.alert(
       "Confirmation",
       "Are you sure you want to delete this group?",
@@ -166,6 +165,24 @@ const Group = ({ navigation, route }) => {
     });
   };
 
+  const viewCharts = () => {
+    navigation.navigate("ViewCharts", {
+      expenseList: expenseList,
+      group: group,
+      token: token,
+      userId: userId,
+    });
+  };
+
+  const settleUp = () => {
+    navigation.navigate("SettleUp", {
+      expenseList: expenseList,
+      group: group,
+      token: token,
+      userId: userId,
+    });
+  };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getGroupData();
@@ -178,6 +195,7 @@ const Group = ({ navigation, route }) => {
       <View style={styles.bottomSheet}>
         <View style={styles.compTitle}>
           <Text style={styles.compTitleStyle}>{group.group?.name}</Text>
+          <Text>{group.group?.category}</Text>
         </View>
         <TouchableOpacity
           style={styles.addMembersSign}
@@ -201,20 +219,20 @@ const Group = ({ navigation, route }) => {
             })}
           </ScrollView>
         )}
-        <ScrollView style={styles.btnSet} horizontal={true}>
+        <View style={styles.btnSet} horizontal={true}>
           <TouchableOpacity onPress={goToAddExpense}>
             <Text style={styles.btnSetText}>Add Expense</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={settleUp}>
             <Text style={styles.btnSetText}>Settle Up</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <Text style={styles.btnSetText}>Balance</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={viewCharts}>
             <Text style={styles.btnSetText}>View Charts</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
         <ScrollView
           style={styles.scrollView}
           refreshControl={
@@ -244,7 +262,7 @@ const Group = ({ navigation, route }) => {
             <Text style={styles.endText}> End of Expenses list </Text>
           </View>
         </ScrollView>
-        <ScrollView style={{ marginTop: 20 }}>
+        <ScrollView style={{ marginBottom: 10 }}>
           <TouchableOpacity style={styles.groupPageIconLine}>
             <Ionicons name="copy" size={24} color="black" />
             <Text style={[styles.groupIconText, { color: "black" }]}>
@@ -294,8 +312,10 @@ const styles = StyleSheet.create({
   },
   btnSet: {
     maxHeight: 50,
-    marginTop: 30,
+    marginTop: 10,
     marginHorizontal: 20,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   btnSetText: {
     fontSize: 13,
