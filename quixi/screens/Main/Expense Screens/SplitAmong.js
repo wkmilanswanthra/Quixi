@@ -49,7 +49,12 @@ const SplitAmong = ({ navigation, route }) => {
     if (userId !== "" && token !== "" && isGroup === true) {
       console.log("members", members);
       console.log("userId", userId);
-      const meme = members.filter((element) => element._id !== userId);
+      members.forEach((element) => {
+        if (element._id === userId.replaceAll('"', "")) {
+          element.isChecked = true;
+        }
+      });
+      const meme = members.filter((element) => element._id !== userId.replaceAll('"',""));
       setData(meme);
       setLoading(false);
     }
@@ -72,8 +77,9 @@ const SplitAmong = ({ navigation, route }) => {
           headers: { Authorization: "Bearer " + token.replaceAll('"', "") },
         })
         .then((res) => {
-          res.data = res.data.filter((element) => element._id !== userId);
+          // res.data = res.data.filter((element) => element._id !== userId.replaceAll('"', ""));
           res.data.forEach((element) => {
+            
             element.isChecked = false;
             if (splitAmong) {
               splitAmong.forEach((split) => {

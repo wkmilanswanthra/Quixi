@@ -1,5 +1,4 @@
-
-const BASE_URL = "http://192.168.1.155:3000" + "/api";
+const BASE_URL = "http://192.168.24.237:3000" + "/api";
 
 export const USER_ROUTES = {
   SIGNUP: `${BASE_URL}/users/signup`,

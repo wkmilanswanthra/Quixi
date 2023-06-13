@@ -44,6 +44,8 @@ export default function Activity({ navigation }) {
     setToken(token);
   };
 
+  console.log(activity);
+
   const getActivity = async () => {
     const url = PAYMENT_ROUTES.FIND_ALL_BY_USER_ID(userId.replaceAll('"', ""));
     let config = {
@@ -67,7 +69,7 @@ export default function Activity({ navigation }) {
     setRefreshing(true);
     getActivity();
     setRefreshing(false);
-  }, []);
+  }, [refreshing]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,6 +85,7 @@ export default function Activity({ navigation }) {
           }
         >
           {!(activity === []) &&
+            activity &&
             activity.map((act, index) => (
               <TouchableOpacity
                 key={index}
@@ -91,7 +94,7 @@ export default function Activity({ navigation }) {
               >
                 <View style={styles.groupRowDetail}>
                   <Text style={styles.groupName}>
-                    {act.paidBy._id.replaceAll('"', "") ===
+                    {act?.paidBy._id.replaceAll('"', "") ===
                     userId.replaceAll('"', "")
                       ? "You"
                       : act.paidBy.name}
