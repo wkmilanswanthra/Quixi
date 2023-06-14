@@ -44,7 +44,7 @@ export default function Activity({ navigation }) {
     setToken(token);
   };
 
-  console.log(activity);
+  console.log(token);
 
   const getActivity = async () => {
     const url = PAYMENT_ROUTES.FIND_ALL_BY_USER_ID(userId.replaceAll('"', ""));

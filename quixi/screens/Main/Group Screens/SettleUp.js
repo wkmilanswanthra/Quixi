@@ -26,7 +26,7 @@ const SettleUp = ({ navigation, route }) => {
       },
     };
 
-    Axios(config)
+    axios(config)
       .then((response) => {
         console.log(response.data);
         setData(response.data);

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert,
   SafeAreaView,
   ActivityIndicator,
   Platform,
@@ -18,7 +19,7 @@ import { useEffect, useState } from "react";
 import { COLORS } from "../../assets/constants/colors";
 import { StatusBar } from "react-native";
 import { STRINGS } from "../../assets/constants/strings";
-import { EXPENSE_ROUTES, USER_ROUTES } from "../../assets/constants/routes";
+import { USER_ROUTES, DOMAIN_URL } from "../../assets/constants/routes";
 
 export default function Profile({ navigation, route }) {
   const { setUserToken } = route.params;
@@ -29,6 +30,8 @@ export default function Profile({ navigation, route }) {
   let [token, setToken] = useState("");
   let [user, setUser] = useState({});
   const [refreshing, setRefreshing] = useState(false);
+
+  const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -119,6 +122,32 @@ export default function Profile({ navigation, route }) {
     }
   }
   console.log(user);
+  // Alert.alert("Success", user.profileImgUrl);
+  console.log(user.profileImgUrl);
+
+  useEffect(() => {
+    if (user && user.profileImgUrl) {
+      if (user.profileImgUrl.startsWith("https://robohash.org/")) {
+        setImageUrl(user.profileImgUrl);
+      } else if (user.profileImgUrl.startsWith("uploads/")) {
+        setImageUrl(`${DOMAIN_URL}/${user.profileImgUrl}`);
+      } else {
+        setImageUrl(null);
+      }
+
+      // Save newImageUrl to SecureStore
+      SecureStore.setItemAsync("imageUrl", String(imageUrl));
+
+    } else {
+
+      setImageUrl(null);
+      // Remove imageUrl from SecureStore
+      SecureStore.deleteItemAsync("imageUrl");
+
+    }
+  }, [user]);
+
+  // Alert.alert("Success", imageUrl);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -133,10 +162,7 @@ export default function Profile({ navigation, route }) {
             <Text style={styles.compTitleStyle}>{STRINGS.PROFILE}</Text>
           </View>
           <View style={styles.header}>
-            <Image
-              source={{ uri: user.profileImgUrl }}
-              style={styles.profilePic}
-            />
+            <Image source={{ uri: imageUrl }} style={styles.profilePic} />
             <TouchableOpacity
               style={styles.title}
               onPress={() => handlePress("editAccount")}

@@ -1,4 +1,7 @@
-const BASE_URL = "http://192.168.24.237:3000" + "/api";
+const DOMAIN = "https://d576-103-21-164-25.ngrok-free.app";
+const BASE_URL = DOMAIN + "/api";
+
+export const DOMAIN_URL = DOMAIN;
 
 export const USER_ROUTES = {
   SIGNUP: `${BASE_URL}/users/signup`,
