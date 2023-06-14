@@ -10,6 +10,8 @@ const ViewCharts = ({ navigation, route }) => {
   const { group, token, userId, expenseList } = route.params;
 
   const [transactions, setTransactions] = react.useState([]);
+  const [payed, setPayed] = react.useState([]);
+  const [received, setReceived] = react.useState([]);
 
   react.useEffect(() => {
     if (group) {
@@ -48,12 +50,34 @@ const ViewCharts = ({ navigation, route }) => {
     setTransactions(list);
   };
 
+  const getPayed = () => {
+    let list = [];
+    for (let i = 0; i < transactions.length; i++) {
+      if (transactions[i].paidBy._id === userId.replaceAll('"', ""))
+        list.push(transactions[i]);
+    }
+    setPayed(list);
+  };
+
+  const getReceived = () => {
+    let list = [];
+    for (let i = 0; i < transactions.length; i++) {
+      if (transactions[i].paidTo._id === userId.replaceAll('"', ""))
+        list.push(transactions[i]);
+    }
+    setReceived(list);
+  };
+
   const data = [
     { quarter: 1, earnings: 13000 },
     { quarter: 2, earnings: 16500 },
     { quarter: 3, earnings: 14250 },
     { quarter: 4, earnings: 19000 },
   ];
+
+  console.log(transactions);
+  console.log(payed)
+  console.log(received)
 
   return (
     <SafeAreaView style={styles.container}>

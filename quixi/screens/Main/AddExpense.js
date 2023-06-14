@@ -272,7 +272,7 @@ export default function AddExpense({ navigation, route }) {
                           key={index}
                           style={styles.img}
                           source={{
-                            uri: item.image || "https://picsum.photos/200/200",
+                            uri: item.profileImgUrl || "https://picsum.photos/200/200",
                           }}
                         ></Image>
                       );
