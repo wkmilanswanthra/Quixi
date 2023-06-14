@@ -10,6 +10,8 @@ const ViewCharts = ({ navigation, route }) => {
   const { group, token, userId, expenseList } = route.params;
 
   const [transactions, setTransactions] = react.useState([]);
+  const [payed, setPayed] = react.useState([]);
+  const [received, setReceived] = react.useState([]);
 
   react.useEffect(() => {
     if (group) {
@@ -48,13 +50,23 @@ const ViewCharts = ({ navigation, route }) => {
     setTransactions(list);
   };
 
-  // useEffect(() => {
-  //   if (transactions.length > 0) {
-  //     setValues();
-  //   }
-  // }, [transactions]);
+  const getPayed = () => {
+    let list = [];
+    for (let i = 0; i < transactions.length; i++) {
+      if (transactions[i].paidBy._id === userId.replaceAll('"', ""))
+        list.push(transactions[i]);
+    }
+    setPayed(list);
+  };
 
-  // console.log("Transactions: ", transactions);
+  const getReceived = () => {
+    let list = [];
+    for (let i = 0; i < transactions.length; i++) {
+      if (transactions[i].paidTo._id === userId.replaceAll('"', ""))
+        list.push(transactions[i]);
+    }
+    setReceived(list);
+  };
 
   const data = [
     { quarter: 1, earnings: 13000 },
@@ -63,19 +75,10 @@ const ViewCharts = ({ navigation, route }) => {
     { quarter: 4, earnings: 19000 },
   ];
 
-  // const setValues = () => {
-  //   let payed = [];
-  //   let received = [];
-  //   for (let i = 0; i < transactions.length; i++) {
-  //     if (transactions[i].paidBy._id === userId.replaceAll('"', "")) {
-  //       payed.push(transactions[i]);
-  //     } else {
-  //       received.push(transactions[i]);
-  //     }
-  //   }
-  //   setPayed(payed);
-  //   setReceived(received);
-  // };
+  console.log(transactions);
+  console.log(payed);
+  console.log(received);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />

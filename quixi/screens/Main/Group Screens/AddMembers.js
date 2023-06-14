@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
 
   flatlist: {
     marginTop: 10,
+    marginBottom: 60,
   },
   item: {
     flexDirection: "row",
@@ -246,6 +247,9 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#010B40",
     fontSize: 18,
+    borderRadius: 10,
+    textAlign: "center",
+
   },
   btn: {
     //alignItems:'flex-end',
@@ -253,7 +257,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: "75%",
     height: 50,
-    marginBottom: 50,
+    marginBottom: 70,
+    justifyContent: "center",
+
   },
   checkbox: {
     marginLeft: "auto",
