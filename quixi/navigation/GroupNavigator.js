@@ -12,6 +12,7 @@ import ViewExpense from "../screens/Main/Group Screens/ViewExpense";
 import PaymentDisplay from "../screens/Main/Payment Screens/PaymentDisplay";
 import ViewCharts from "../screens/Main/Group Screens/ViewCharts";
 import SettleUp from "../screens/Main/Group Screens/SettleUp";
+import UpdateGroup from "../screens/Main/Group Screens/UpdateGroup";
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,7 @@ export default function GroupNavigator() {
       <Stack.Screen name="PaymentDisplay" component={PaymentDisplay} />
       <Stack.Screen name="ViewCharts" component={ViewCharts} />
       <Stack.Screen name="SettleUp" component={SettleUp} />
+      <Stack.Screen name="UpdateGroup" component={UpdateGroup} />
 
     </Stack.Navigator>
   );

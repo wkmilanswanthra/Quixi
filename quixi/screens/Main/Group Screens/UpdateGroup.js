@@ -17,63 +17,24 @@ import { GROUP_ROUTES } from "../../../assets/constants/routes";
 import * as SecureStore from "expo-secure-store";
 
 export default function UpdateGroup({ navigation, route }) {
-  const { groupId } = route.params; // Get groupId from route params
+  const { groupId, userId, group, token } = route.params; // Get groupId from route params
   const [selectValue, setSelectValue] = useState("");
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
-
-  let [userId, setUserId] = useState("");
-  let [token, setToken] = useState("");
-  let [user, setUser] = useState({});
 
   const handlePickerChange = (value) => {
     setSelectValue(value);
   };
 
   useEffect(() => {
-    async function fetchData() {
-      await getUserId();
-      await getToken();
-      await getGroupDetails(); // Fetch existing group details
+    if (group) {
+      setSelectValue(group.category);
+      setGroupName(group.name);
+      setGroupDescription(group.description);
     }
-    fetchData();
-  }, []);
+  }, [group]);
 
-  const getUserId = async () => {
-    const userId = await SecureStore.getItemAsync("userId");
-    setUserId(userId);
-  };
-
-  const getToken = async () => {
-    const token = await SecureStore.getItemAsync("token");
-    setToken(token);
-  };
-
-  // New function to fetch existing group details
-  const getGroupDetails = async () => {
-    let url = GROUP_ROUTES.FIND_BY_ID(groupId);
-    const config = {
-      method: "get",
-      url: url,
-      headers: {
-        authorization: "Bearer " + token.replaceAll('"', ""),
-      },
-    };
-
-    Axios(config)
-      .then((response) => {
-        const group = response.data.group;
-        setGroupName(group.name);
-        setGroupDescription(group.description);
-        setSelectValue(group.category);
-      })
-      .catch((error) => {
-        console.log(error);
-        Alert.alert("Failed to fetch group details", error);
-      });
-  };
-
-  // Renamed function to updateGroup
+  // function to updateGroup
   function updateGroup() {
     console.log(selectValue, groupName, groupDescription);
     if (!groupName || !groupDescription || !selectValue) {
@@ -112,18 +73,22 @@ export default function UpdateGroup({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View>
+        <Text style={styles.head}>Update the Group</Text>
+      </View>
       <StatusBar style="light" />
       <View style={styles.bottomSheet}>
-        <Text style={styles.title}>Update the Group</Text>
         <View style={styles.groupDetails}>
-          <Text style={styles.groupDetailsText}>Group Name</Text>
+          <Text style={styles.groupDetailsText1}>Group Name</Text>
           <TextInput
+            defaultValue={group.group.name}
             style={styles.input}
             onChangeText={(text) => setGroupName(text)}
             value={groupName}
           />
           <Text style={styles.groupDetailsText}>Group Description</Text>
           <TextInput
+            defaultValue={group.group.description}
             style={styles.input}
             onChangeText={(text) => setGroupDescription(text)}
             value={groupDescription}
@@ -167,15 +132,17 @@ const styles = StyleSheet.create({
   bottomSheet: {
     height: "100%", //change this after design it
     backgroundColor: COLORS.BG,
-    width: "100%",
+    width: "98%",
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: 100,
+    marginTop: Platform.OS === "android" ? 40 : 10, // adjust for Android status bar
   },
 
   container: {
-    paddingTop: 10,
+    paddingTop: 130,
     backgroundColor: COLORS.PRIMARY,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   input: {
@@ -187,12 +154,11 @@ const styles = StyleSheet.create({
   },
 
   groupDetails: {
-    marginTop: 20,
     alignSelf: "center",
   },
 
-  groupDetailsText: {
-    marginTop: 40,
+  groupDetailsText1: {
+    marginTop: 30,
   },
 
   labelContainer: {
@@ -200,5 +166,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 40,
     marginHorizontal: 75,
+  },
+  head: {
+    justifyContent: "center",
+    alignContent: "center",
+    color: COLORS.BG,
+    fontSize: 30,
   },
 });

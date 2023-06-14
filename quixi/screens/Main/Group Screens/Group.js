@@ -108,6 +108,16 @@ const Group = ({ navigation, route }) => {
     });
   };
 
+  const goToUpdateGroup = () => {
+    navigation.navigate("UpdateGroup", {
+      groupId: groupId,
+      token: token,
+      userId: userId,
+      group: group,
+    });
+  };
+
+
   const deleteGroup = () => {
     const confirmDelete = () => {
       const url = GROUP_ROUTES.DELETE(groupId);
@@ -233,58 +243,63 @@ const Group = ({ navigation, route }) => {
             <Text style={styles.btnSetText}>View Charts</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView
-          style={styles.scrollView}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {!(expenseList === []) &&
-            expenseList.map((expense, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.groupSlot}
-                onPress={() => goToExpense(expense)}
-              >
-                <View style={styles.groupRowDetail}>
-                  <Text style={styles.groupName}>{expense.name}</Text>
-                  <Text style={styles.groupOwe}>{expense.category}</Text>
-                </View>
-                <View style={styles.groupRowDetail}>
-                  <Text style={styles.groupCreatedBy} numberOfLines={1}>
-                    {group.description}
-                  </Text>
-                  <Text style={styles.groupBalance}> {expense.amount}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          <View style={styles.endTextContainer}>
-            <Text style={styles.endText}> End of Expenses list </Text>
-          </View>
-        </ScrollView>
-        <ScrollView style={{ marginTop: 10, maxHeight: 100 }}>
-          <TouchableOpacity style={styles.groupPageIconLine}>
-            <Ionicons name="create" size={24} color="grey" />
-            <Text style={[styles.groupIconText, { color: "grey" }]}>
-              Edit Group
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.groupPageIconLine}
-            onPress={deleteGroup}
+        <ScrollView style={{ marginTop: 10, maxHeight: "100%" }}>
+          <ScrollView
+            style={styles.scrollView}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
-            <Ionicons name="trash-outline" size={24} color="red" />
-            <Text style={[styles.groupIconText, { color: "red" }]}>
-              Delete Group
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.groupPageIconLine}>
-            <Ionicons name="copy" size={24} color="black" />
-            <Text style={[styles.groupIconText, { color: "black" }]}>
-              Copy Group Link
-            </Text>
-          </TouchableOpacity>
+            {!(expenseList === []) &&
+              expenseList.map((expense, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.groupSlot}
+                  onPress={() => goToExpense(expense)}
+                >
+                  <View style={styles.groupRowDetail}>
+                    <Text style={styles.groupName}>{expense.name}</Text>
+                    <Text style={styles.groupOwe}>{expense.category}</Text>
+                  </View>
+                  <View style={styles.groupRowDetail}>
+                    <Text style={styles.groupCreatedBy} numberOfLines={1}>
+                      {group.description}
+                    </Text>
+                    <Text style={styles.groupBalance}> {expense.amount}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            <View style={styles.endTextContainer}>
+              <Text style={styles.endText}> End of Expenses list </Text>
+            </View>
+          </ScrollView>
+          <ScrollView style={{ marginTop: 10, maxHeight: 100 }}>
+            <TouchableOpacity
+              style={styles.groupPageIconLine}
+              onPress={goToUpdateGroup}
+            >
+              <Ionicons name="create" size={24} color="black" />
+              <Text style={[styles.groupIconText, { color: "black" }]}>
+                Edit Group
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.groupPageIconLine}
+              onPress={deleteGroup}
+            >
+              <Ionicons name="trash-outline" size={24} color="red" />
+              <Text style={[styles.groupIconText, { color: "red" }]}>
+                Delete Group
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.groupPageIconLine}>
+              <Ionicons name="copy" size={24} color="black" />
+              <Text style={[styles.groupIconText, { color: "black" }]}>
+                Copy Group Link
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
         </ScrollView>
       </View>
     </SafeAreaView>
