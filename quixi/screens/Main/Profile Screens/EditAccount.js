@@ -27,6 +27,20 @@ export default function EditProfile({ navigation, route }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [profileImageUri, setProfileImageUri] = useState(null);
 
+  useEffect(() => {
+    async function fetchImageUrl() {
+      // Fetch the image URL from SecureStore
+      const imageUrl = await SecureStore.getItemAsync("imageUrl");
+
+      // If imageUrl exists, set it as the default value of profileImageUri
+      if (imageUrl) {
+        setProfileImageUri(imageUrl);
+      }
+    }
+
+    fetchImageUrl();
+  }, []);
+
   let [userId, setUserId] = useState("");
   let [token, setToken] = useState("");
   let [user, setUser] = useState({});
@@ -132,7 +146,7 @@ export default function EditProfile({ navigation, route }) {
         console.log(response.data);
         Alert.alert("Success", "Profile image changed successfully");
       })
-      .then(data => console.log(data))
+      .then((data) => console.log(data))
       .catch((error) => {
         console.log(error);
         Alert.alert("Failed", error);

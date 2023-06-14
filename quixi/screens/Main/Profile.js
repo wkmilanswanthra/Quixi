@@ -134,8 +134,16 @@ export default function Profile({ navigation, route }) {
       } else {
         setImageUrl(null);
       }
+
+      // Save newImageUrl to SecureStore
+      SecureStore.setItemAsync("imageUrl", String(imageUrl));
+
     } else {
+
       setImageUrl(null);
+      // Remove imageUrl from SecureStore
+      SecureStore.deleteItemAsync("imageUrl");
+
     }
   }, [user]);
 
