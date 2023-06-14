@@ -25,6 +25,8 @@ const ViewExpense = ({ navigation, route }) => {
 
   const [transactions, setTransactions] = useState([]);
 
+  console.log(expense);
+
   useEffect(() => {
     if (expense) {
       getTransactions();
@@ -35,7 +37,9 @@ const ViewExpense = ({ navigation, route }) => {
     try {
       const trans = [];
       for (let i = 0; i < expense.transactions.length; i++) {
+        console.log("Hereeeeeeee --  ",expense.transactions[i]);
         const url = TRANSACTION_ROUTES.FIND_BY_ID(expense.transactions[i]);
+        console.log(url)
         const config = {
           method: "get",
           url: url,
@@ -48,8 +52,6 @@ const ViewExpense = ({ navigation, route }) => {
       }
       setTransactions(trans);
 
-      console.log(expense.transactions);
-      console.log(transactions);
     } catch (err) {
       console.error(err.message);
     }
@@ -111,6 +113,13 @@ const ViewExpense = ({ navigation, route }) => {
     );
   };
 
+  console.log("Transactionsssss --- ",transactions);
+  console.log("Expense --- ",expense);
+  console.log("Expense List --- ",expenseList);
+  console.log("Group Id --- ",groupId);
+  console.log("User Id --- ",userId);
+  console.log("Token --- ",token);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
@@ -119,13 +128,13 @@ const ViewExpense = ({ navigation, route }) => {
           <Text style={styles.compTitleStyle}>{expense.name}</Text>
         </View>
         <ScrollView style={{ marginTop: 20, maxHeight: 500 }}>
-          {transactions.map((transaction, index) => (
+          {transactions && transactions.map((transaction, index) => (
             <View key={index} style={styles.groupSlot}>
               <View
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
+                }}  
               >
                 <View style={styles.groupRowDetail}>
                   <Text style={styles.groupOwe}>

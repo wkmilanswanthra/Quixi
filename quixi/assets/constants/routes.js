@@ -1,5 +1,4 @@
-
-const BASE_URL = "https://207b-2407-c00-d007-5696-60fd-65b0-ec56-e69c.ngrok-free.app" + "/api";
+const BASE_URL = "http://192.168.24.237:3000" + "/api";
 
 export const USER_ROUTES = {
   SIGNUP: `${BASE_URL}/users/signup`,
@@ -9,6 +8,7 @@ export const USER_ROUTES = {
   UPDATE: (id) => `${BASE_URL}/users/${id}`,
   DELETE: (id) => `${BASE_URL}/users/${id}`,
   VALIDATE: `${BASE_URL}/users/validate`,
+  UPDATE_PROFILE_IMAGE: (id) => `${BASE_URL}/users/${id}/profileImg`,
 };
 
 export const GROUP_ROUTES = {

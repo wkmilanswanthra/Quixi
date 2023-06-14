@@ -1,4 +1,4 @@
-import react from "react";
+import react, { useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet, StatusBar } from "react-native";
 import { COLORS } from "../../../assets/constants/colors";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
@@ -76,8 +76,8 @@ const ViewCharts = ({ navigation, route }) => {
   ];
 
   console.log(transactions);
-  console.log(payed)
-  console.log(received)
+  console.log(payed);
+  console.log(received);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -19,7 +19,7 @@ import { GROUP_ROUTES } from "../../../assets/constants/routes";
 import Axios from "axios";
 
 const Group = ({ navigation, route }) => {
-  const { groupId, list, setList } = route.params;
+  const { groupId, list, setList, toke } = route.params;
 
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
@@ -57,7 +57,7 @@ const Group = ({ navigation, route }) => {
       method: "get",
       url: url,
       headers: {
-        authorization: "Bearer " + token.replaceAll('"', ""),
+        authorization: "Bearer " + toke.replaceAll('"', ""),
       },
     };
     Axios(config)
@@ -136,7 +136,6 @@ const Group = ({ navigation, route }) => {
         });
     };
 
-    // Show confirmation dialog
     Alert.alert(
       "Confirmation",
       "Are you sure you want to delete this group?",
@@ -168,12 +167,21 @@ const Group = ({ navigation, route }) => {
 
   const viewCharts = () => {
     navigation.navigate("ViewCharts", {
+      expenseList: expenseList,
       group: group,
       token: token,
       userId: userId,
-      expenseList: expenseList,
     });
-  }
+  };
+
+  const settleUp = () => {
+    navigation.navigate("SettleUp", {
+      expenseList: expenseList,
+      group: group,
+      token: token,
+      userId: userId,
+    });
+  };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -187,6 +195,7 @@ const Group = ({ navigation, route }) => {
       <View style={styles.bottomSheet}>
         <View style={styles.compTitle}>
           <Text style={styles.compTitleStyle}>{group.group?.name}</Text>
+          <Text>{group.group?.category}</Text>
         </View>
         <TouchableOpacity
           style={styles.addMembersSign}
@@ -214,9 +223,12 @@ const Group = ({ navigation, route }) => {
           <TouchableOpacity onPress={goToAddExpense}>
             <Text style={styles.btnSetText}>Add Expense</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* <TouchableOpacity onPress={settleUp}>
             <Text style={styles.btnSetText}>Settle Up</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity>
+            <Text style={styles.btnSetText}>Balance</Text>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={viewCharts}>
             <Text style={styles.btnSetText}>View Charts</Text>
           </TouchableOpacity>
@@ -250,13 +262,7 @@ const Group = ({ navigation, route }) => {
             <Text style={styles.endText}> End of Expenses list </Text>
           </View>
         </ScrollView>
-        <ScrollView style={{ marginTop: 20 }}>
-          <TouchableOpacity style={styles.groupPageIconLine}>
-            <Ionicons name="copy" size={24} color="black" />
-            <Text style={[styles.groupIconText, { color: "black" }]}>
-              Copy Group Link
-            </Text>
-          </TouchableOpacity>
+        <ScrollView style={{ marginTop: 10, maxHeight: 100 }}>
           <TouchableOpacity style={styles.groupPageIconLine}>
             <Ionicons name="create" size={24} color="grey" />
             <Text style={[styles.groupIconText, { color: "grey" }]}>
@@ -271,6 +277,12 @@ const Group = ({ navigation, route }) => {
             <Ionicons name="trash-outline" size={24} color="red" />
             <Text style={[styles.groupIconText, { color: "red" }]}>
               Delete Group
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.groupPageIconLine}>
+            <Ionicons name="copy" size={24} color="black" />
+            <Text style={[styles.groupIconText, { color: "black" }]}>
+              Copy Group Link
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -300,7 +312,7 @@ const styles = StyleSheet.create({
   },
   btnSet: {
     maxHeight: 50,
-    marginTop: 30,
+    marginTop: 10,
     marginHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -372,7 +384,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   scrollView: {
-    maxHeight: 300,
+    maxHeight: 250,
     marginTop: 10,
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,

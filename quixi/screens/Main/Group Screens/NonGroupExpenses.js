@@ -54,6 +54,8 @@ const NonGroupExpenses = ({ navigation, route }) => {
     setRefreshing(false);
   }, []);
 
+  console.log(expenseList);
+
   const goToExpense = (expense) => {
     navigation.navigate("ViewExpense", {
       expense: expense,
